@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { getCourses } from "@/lib/content";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = "https://si-teknik-unesa.vercel.app";
+  const base = "https://si-teknik-unesa.romitech.me";
   const routes: MetadataRoute.Sitemap = [
     { url: base, lastModified: new Date() },
   ];

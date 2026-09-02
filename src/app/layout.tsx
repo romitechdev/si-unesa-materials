@@ -3,7 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://si-teknik-unesa.vercel.app"),
+  metadataBase: new URL("https://si-teknik-unesa.romitech.me"),
   icons: {
     icon: "/icon.svg",
   },
@@ -24,12 +24,12 @@ export const metadata: Metadata = {
     "Course Materials",
     "Muhromin",
   ],
-  authors: [{ name: "Muhromin", url: "https://si-teknik-unesa.vercel.app" }],
+  authors: [{ name: "Muhromin", url: "https://si-teknik-unesa.romitech.me" }],
   creator: "Muhromin",
   openGraph: {
     type: "website",
     locale: "id_ID",
-    url: "https://si-teknik-unesa.vercel.app",
+    url: "https://si-teknik-unesa.romitech.me",
     siteName: "SI UNESA",
     title: "SI UNESA — Course Materials",
     description:

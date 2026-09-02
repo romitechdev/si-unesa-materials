@@ -163,7 +163,7 @@ function LoginView({
         </form>
 
         <p className="text-center font-mono text-[11px] text-muted-foreground/60">
-          si-teknik-unesa.vercel.app · CMS
+          si-teknik-unesa.romitech.me · CMS
         </p>
       </div>
     </div>
@@ -557,7 +557,7 @@ export function AdminClient() {
             rel="noreferrer"
             className="text-xs text-muted-foreground hover:text-foreground hover:underline"
           >
-            si-teknik-unesa.vercel.app ↗
+            si-teknik-unesa.romitech.me ↗
           </a>
         </div>
         <div className="flex items-center gap-2">

@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/admin", "/api/"],
     },
-    sitemap: "https://si-teknik-unesa.vercel.app/sitemap.xml",
+    sitemap: "https://si-teknik-unesa.romitech.me/sitemap.xml",
   };
 }
