@@ -1,1 +1,349 @@
 @import "tailwindcss";
+@import "highlight.js/styles/github-dark.css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.141 0.005 285.823);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.141 0.005 285.823);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.141 0.005 285.823);
+  --primary: oklch(0.21 0.006 285.823);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.967 0.001 286.375);
+  --secondary-foreground: oklch(0.21 0.006 285.823);
+  --muted: oklch(0.967 0.001 286.375);
+  --muted-foreground: oklch(0.552 0.016 285.938);
+  --accent: oklch(0.967 0.001 286.375);
+  --accent-foreground: oklch(0.21 0.006 285.823);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(0.92 0.004 286.32);
+  --input: oklch(0.92 0.004 286.32);
+  --ring: oklch(0.704 0.01 286.32);
+  --brand: oklch(0.25 0 0);
+  --brand-foreground: oklch(0.98 0 0);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.141 0.005 285.823);
+  --sidebar-border: oklch(0.92 0.004 286.32);
+  --sidebar-accent: oklch(0.96 0.002 286.32);
+  --sidebar-ring: oklch(0.704 0.01 286.32);
+}
+
+.dark {
+  --background: oklch(0.141 0.005 285.823);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.19 0.006 285.823);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.21 0.006 285.823);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.92 0.004 286.32);
+  --primary-foreground: oklch(0.21 0.006 285.823);
+  --secondary: oklch(0.274 0.006 286.062);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.274 0.006 286.062);
+  --muted-foreground: oklch(0.704 0.01 286.32);
+  --accent: oklch(0.274 0.006 286.062);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.637 0.237 25.331);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(0.29 0.006 286);
+  --input: oklch(0.29 0.006 286);
+  --ring: oklch(0.55 0.01 286.32);
+  --brand: oklch(0.85 0 0);
+  --brand-foreground: oklch(0.15 0 0);
+  --sidebar: oklch(0.17 0.005 285.8);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.28 0.006 286);
+  --sidebar-accent: oklch(0.26 0.006 286);
+  --sidebar-ring: oklch(0.55 0.01 286.32);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, "SF Mono",
+    Menlo, Consolas, monospace;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--border);
+  }
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--brand) 25%, transparent);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---- Custom thin scrollbar ---- */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+  background-clip: content-box;
+}
+
+/* ---- Markdown content typography ---- */
+.prose-lecture {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--foreground);
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+.prose-lecture > *:first-child {
+  margin-top: 0;
+}
+.prose-lecture h2,
+.prose-lecture h3,
+.prose-lecture h4 {
+  scroll-margin-top: 5rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  color: var(--foreground);
+}
+.prose-lecture h2 {
+  font-size: 1.6rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.prose-lecture h3 {
+  font-size: 1.25rem;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+.prose-lecture h4 {
+  font-size: 1.05rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.prose-lecture p {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+.prose-lecture a {
+  color: var(--brand);
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in oklab, var(--brand) 40%, transparent);
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.prose-lecture a:hover {
+  border-bottom-color: var(--brand);
+}
+.prose-lecture strong {
+  font-weight: 650;
+  color: var(--foreground);
+}
+.prose-lecture ul,
+.prose-lecture ol {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding-left: 1.4rem;
+}
+.prose-lecture ul {
+  list-style: disc;
+}
+.prose-lecture ol {
+  list-style: decimal;
+}
+.prose-lecture li {
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+.prose-lecture li::marker {
+  color: var(--muted-foreground);
+}
+.prose-lecture ul ul,
+.prose-lecture ol ol,
+.prose-lecture ul ol,
+.prose-lecture ol ul {
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+.prose-lecture blockquote {
+  margin: 1.5rem 0;
+  padding: 0.5rem 1.1rem;
+  border-left: 3px solid var(--brand);
+  background: var(--muted);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  color: var(--foreground);
+}
+.prose-lecture blockquote p {
+  margin: 0.5rem 0;
+}
+.prose-lecture blockquote p:first-child {
+  margin-top: 0;
+}
+.prose-lecture blockquote p:last-child {
+  margin-bottom: 0;
+}
+.prose-lecture code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--muted);
+  border: 1px solid var(--border);
+  padding: 0.12em 0.4em;
+  border-radius: 6px;
+}
+.prose-lecture pre {
+  margin: 1.5rem 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: oklch(0.16 0.008 265 / 0.95);
+  overflow-x: auto;
+  max-width: 100%;
+  min-width: 0;
+}
+.prose-lecture pre code {
+  display: block;
+  padding: 1rem 1.15rem;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  font-size: 0.85rem;
+  line-height: 1.7;
+}
+.prose-lecture pre code.hljs {
+  background: transparent;
+  padding: 0;
+  color: #e6edf3;
+}
+.prose-lecture .table-wrapper {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+  margin: 1.5rem 0;
+  -webkit-overflow-scrolling: touch;
+}
+.prose-lecture table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  font-size: 0.925rem;
+}
+.prose-lecture th,
+.prose-lecture td {
+  border: 1px solid var(--border);
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+  vertical-align: top;
+}
+.prose-lecture th {
+  background: var(--muted);
+  font-weight: 600;
+}
+.prose-lecture tbody tr:nth-child(even) {
+  background: color-mix(in oklab, var(--muted) 50%, transparent);
+}
+.prose-lecture hr {
+  margin: 2.5rem 0;
+  border: none;
+  border-top: 1px solid var(--border);
+}
+.prose-lecture img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slide-in-left {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
