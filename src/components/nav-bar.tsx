@@ -40,11 +40,9 @@ export function NavBar({
         {/* Right actions — DeepWiki style */}
         <div className="flex items-center gap-2">
           <a
-            href="https://github.com/romitechdev/si-unesa-materials"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/admin"
             className="hidden items-center gap-2 rounded-md border border-border bg-card px-3 py-1.5 text-sm transition-colors hover:bg-accent sm:inline-flex"
-            title="Open repository"
+            title="Edit SI"
           >
             <Pencil className="size-4" />
             <span>Edit SI</span>
