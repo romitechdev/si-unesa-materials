@@ -202,6 +202,17 @@
   }
 }
 
+/* GitHub icon pulse (mirrors DeepWiki's Devin logo pulse) */
+@keyframes custom-pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 /* ---- Custom thin scrollbar ---- */
 .scrollbar-thin {
   scrollbar-width: thin;
