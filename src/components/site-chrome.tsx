@@ -10,12 +10,14 @@ export function SiteChrome({
   searchIndex,
   pageTitle,
   showActions = false,
+  githubUrl,
   children,
 }: {
   courses: Course[];
   searchIndex: SearchItem[];
   pageTitle: string;
   showActions?: boolean;
+  githubUrl?: string;
   children: React.ReactNode;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -37,6 +39,7 @@ export function SiteChrome({
             onOpenSidebar={() => setMobileOpen(true)}
             pageTitle={pageTitle}
             showActions={showActions}
+            githubUrl={githubUrl}
           />
           <div className="min-h-0 flex-1">{children}</div>
         </div>
