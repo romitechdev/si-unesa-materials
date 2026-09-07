@@ -6,7 +6,7 @@ import {
   Search,
   X,
   BookMarked,
-  PanelLeftClose,
+  PanelLeft,
   PanelLeftOpen,
 } from "lucide-react";
 import type { Course, SearchItem } from "@/lib/content";
@@ -42,16 +42,25 @@ export function Sidebar({
           collapsed ? "justify-center px-0" : "px-4"
         )}
       >
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-base font-medium leading-none text-foreground md:text-lg">
-            SI UNESA
-          </p>
-          {!collapsed && (
+        {collapsed ? (
+          <Link
+            href="/"
+            className="flex size-9 items-center justify-center rounded-md bg-component font-medium text-foreground"
+            title="SI UNESA — Information Systems"
+            aria-label="SI UNESA — Information Systems"
+          >
+            SI
+          </Link>
+        ) : (
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-base font-medium leading-none text-foreground md:text-lg">
+              SI UNESA
+            </p>
             <p className="mt-1 truncate text-sm font-normal leading-none text-muted-foreground">
               Information Systems
             </p>
-          )}
-        </div>
+          </div>
+        )}
         <Button
           variant="ghost"
           size="icon"
@@ -139,7 +148,7 @@ export function Sidebar({
                 onClick={() => setCollapsed(true)}
                 aria-label="Collapse sidebar"
               >
-                <PanelLeftClose className="size-4" />
+                <PanelLeft className="size-4" />
               </Button>
             </div>
           </div>
@@ -150,7 +159,7 @@ export function Sidebar({
 
   return (
     <>
-      <Sheet open={mobileOpen ?? false} onClose={() => setMobileOpen(false)} side="right">
+      <Sheet open={mobileOpen ?? false} onClose={() => setMobileOpen(false)} side="left">
         {inner}
       </Sheet>
 
