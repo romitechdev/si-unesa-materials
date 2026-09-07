@@ -17,27 +17,44 @@ export function ThemeToggle({ className }: { className?: string }) {
   );
 
   const dark = mounted && resolvedTheme === "dark";
+  const nextTheme = dark ? "light" : "dark";
 
   function toggle() {
-    // Disable color cross-fades for the brief switch so the theme snaps
-    // instantly instead of fading over the reveal wipe (feels much faster).
+    // Disable color cross-fades so the theme snaps instantly under the wipe.
     const root = document.documentElement;
     root.classList.add("theme-switching");
+
+    const applyTheme = () => {
+      setTheme(nextTheme);
+      root.classList.remove("theme-switching");
+    };
+
+    // Prefer the View Transitions API: the browser snapshots the old page,
+    // swaps the theme, then reveals the new snapshot via the CSS
+    // ::view-transition-new(root) keyframes (see globals.css).
+    const vt = (document as any).startViewTransition;
+    if (typeof vt === "function") {
+      const transition = vt.call(document, applyTheme);
+      transition.ready
+        .catch(() => {})
+        .then(() => {
+          // No-op; CSS handles the reveal.
+        });
+      transition.finished
+        .catch(() => {})
+        .then(() => root.classList.remove("theme-switching"));
+      return;
+    }
+
+    // Fallback: play the same reveal keyframes on a fixed overlay.
     const overlay = document.createElement("div");
-    overlay.className = "theme-transition-overlay";
+    overlay.className =
+      "theme-transition-overlay" + (nextTheme === "dark" ? " theme-transition-overlay--dark" : "");
     document.body.appendChild(overlay);
-    setTheme(dark ? "light" : "dark");
-    overlay.addEventListener("animationend", () => {
-      overlay.remove();
-      root.classList.remove("theme-switching");
-    }, {
-      once: true,
-    });
-    // Safety cleanup in case the animation is skipped (reduced motion).
-    setTimeout(() => {
-      overlay.remove();
-      root.classList.remove("theme-switching");
-    }, 450);
+    applyTheme();
+    const cleanup = () => overlay.remove();
+    overlay.addEventListener("animationend", cleanup, { once: true });
+    setTimeout(cleanup, 900);
   }
 
   return (

@@ -409,29 +409,69 @@
 }
 
 /* ---- Theme transition (DeepWiki "reveal" wipe) ----
-   A full-screen overlay plays a diamond clip-path wipe when the theme
-   toggles, mimicking DeepWiki's view-transition theme switch. */
-@keyframes theme-reveal {
-  0% {
+   Mirrors DeepWiki's View Transitions API theme switch. When the theme
+   toggles, the new theme's root is revealed by an animated diamond
+   clip-path wipe (0.7s, expo-out easing). The old snapshot is pinned
+   underneath (z-index:-1) so the wipe is what the user sees.
+   Fallback overlay (used when View Transitions API is unavailable) plays
+   the same keyframes on a fixed full-screen div. */
+:root {
+  --theme-reveal-duration: 0.7s;
+  --theme-reveal-ease: cubic-bezier(0.8, 0, 1, 1);
+}
+
+@keyframes reveal-light {
+  from {
     clip-path: polygon(50% -71%, -50% 71%, -50% 71%, 50% -71%);
-    opacity: 0.6;
+    opacity: 0.5;
   }
-  100% {
+  to {
     clip-path: polygon(50% -71%, -50% 71%, 50% 171%, 171% 50%);
-    opacity: 0;
+    opacity: 1;
   }
 }
+@keyframes reveal-dark {
+  from {
+    clip-path: polygon(171% 50%, 50% 171%, 50% 171%, 171% 50%);
+    opacity: 0.5;
+  }
+  to {
+    clip-path: polygon(171% 50%, 50% 171%, -50% 71%, 50% -71%);
+    opacity: 1;
+  }
+}
+
+::view-transition-group(root) {
+  animation-duration: var(--theme-reveal-duration);
+  animation-timing-function: var(--theme-reveal-ease);
+}
+::view-transition-old(root) {
+  z-index: -1;
+  animation: none;
+}
+::view-transition-new(root) {
+  animation-name: reveal-light;
+}
+.dark::view-transition-new(root) {
+  animation-name: reveal-dark;
+}
+
+/* Fallback overlay for browsers without View Transitions API */
 .theme-transition-overlay {
   position: fixed;
   inset: 0;
   z-index: 9999;
   pointer-events: none;
   background: var(--background);
-  animation: theme-reveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: reveal-light var(--theme-reveal-duration) var(--theme-reveal-ease) forwards;
+}
+.theme-transition-overlay.theme-transition-overlay--dark {
+  animation-name: reveal-dark;
 }
 @media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(root),
   .theme-transition-overlay {
-    animation: none;
+    animation: none !important;
     opacity: 0;
   }
 }
