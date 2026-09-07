@@ -19,17 +19,25 @@ export function ThemeToggle({ className }: { className?: string }) {
   const dark = mounted && resolvedTheme === "dark";
 
   function toggle() {
-    // Play the DeepWiki-style reveal wipe on top of the page while the
-    // theme colors swap underneath.
+    // Disable color cross-fades for the brief switch so the theme snaps
+    // instantly instead of fading over the reveal wipe (feels much faster).
+    const root = document.documentElement;
+    root.classList.add("theme-switching");
     const overlay = document.createElement("div");
     overlay.className = "theme-transition-overlay";
     document.body.appendChild(overlay);
     setTheme(dark ? "light" : "dark");
-    overlay.addEventListener("animationend", () => overlay.remove(), {
+    overlay.addEventListener("animationend", () => {
+      overlay.remove();
+      root.classList.remove("theme-switching");
+    }, {
       once: true,
     });
     // Safety cleanup in case the animation is skipped (reduced motion).
-    setTimeout(() => overlay.remove(), 800);
+    setTimeout(() => {
+      overlay.remove();
+      root.classList.remove("theme-switching");
+    }, 450);
   }
 
   return (

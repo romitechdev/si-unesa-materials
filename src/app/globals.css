@@ -144,11 +144,10 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     overflow-x: clip;
-    transition:
-      background-color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
-      color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  /* Smooth theme transition on all themed surfaces */
+  /* Smooth theme transition on all themed surfaces. The .theme-switching
+     class (set briefly while the theme toggles) disables these so colors
+     snap instantly instead of cross-fading over the reveal wipe. */
   .bg-background,
   .bg-sidebar,
   .bg-card,
@@ -162,6 +161,18 @@
       background-color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
       border-color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
       color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  html.theme-switching body,
+  html.theme-switching .bg-background,
+  html.theme-switching .bg-sidebar,
+  html.theme-switching .bg-card,
+  html.theme-switching .bg-surface,
+  html.theme-switching .bg-popover,
+  html.theme-switching .border-border,
+  html.theme-switching .text-foreground,
+  html.theme-switching .text-muted-foreground,
+  html.theme-switching .text-sidebar-foreground {
+    transition: none !important;
   }
   ::selection {
     background: color-mix(in oklab, var(--brand) 40%, transparent);
@@ -416,7 +427,7 @@
   z-index: 9999;
   pointer-events: none;
   background: var(--background);
-  animation: theme-reveal 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: theme-reveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 @media (prefers-reduced-motion: reduce) {
   .theme-transition-overlay {
