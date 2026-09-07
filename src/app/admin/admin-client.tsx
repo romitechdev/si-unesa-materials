@@ -454,7 +454,7 @@ export function AdminClient() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      showToast(`Mata kuliah "${deleteCourseModal}" dihapus`, "success");
+      showToast(`Course "${deleteCourseModal}" deleted`, "success");
       if (selectedCourse === deleteCourseModal) {
         setSelectedCourse("");
         resetForm();
@@ -594,7 +594,7 @@ export function AdminClient() {
             {/* Inline Input New Course */}
             {isCreatingCourse && (
               <form onSubmit={handleCreateCourse} className="space-y-2 rounded-md border border-border bg-background p-2">
-                <span className="text-[11px] font-mono text-muted-foreground">NAMA MATA KULIAH:</span>
+                <span className="text-[11px] font-mono text-muted-foreground">COURSE NAME:</span>
                 <Input
                   placeholder="e.g.: database-systems"
                   value={newCourseName}
@@ -619,7 +619,7 @@ export function AdminClient() {
               </form>
             )}
 
-            {/* List Mata Kuliah */}
+            {/* Course list */}
             <div className="space-y-3">
               {courses.map((course) => {
                 const isCourseSelected = selectedCourse === course.slug;
@@ -836,7 +836,7 @@ export function AdminClient() {
                   {resources.map((res, i) => (
                     <div key={i} className="flex items-center gap-2">
                       <Input
-                        placeholder="Nama Resource (cth: Slide Modul 1)"
+                        placeholder="Resource name (e.g. Module 1 Slides)"
                         value={res.title}
                         onChange={(e) => {
                           const updated = [...resources];
@@ -898,7 +898,7 @@ export function AdminClient() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => insertMarkdownSnippet("- Poin materi")}
+                        onClick={() => insertMarkdownSnippet("- Key point")}
                       className="rounded border border-border px-1.5 py-0.5 font-mono text-[11px] hover:bg-muted"
                       title="Bullet list"
                     >
@@ -932,7 +932,7 @@ export function AdminClient() {
                     <textarea
                       value={content}
                       onChange={(e) => setContent(e.target.value)}
-                      placeholder="## Pendahuluan&#10;&#10;Tuliskan isi materi di sini dalam format Markdown..."
+                      placeholder="## Introduction&#10;&#10;Write your content here in Markdown format..."
                       className="min-h-[360px] w-full bg-background p-4 font-mono text-xs leading-relaxed outline-none resize-y"
                       required
                     />

@@ -50,14 +50,13 @@ export function NavBar({
 
           <div className="relative">
             <Button
-              variant="outline"
-              size="icon"
-              className="size-9"
+              className="h-9 gap-2 rounded-md px-3 text-sm"
               onClick={() => setShareOpen((o) => !o)}
               aria-label="Share this page"
               aria-expanded={shareOpen}
             >
               <Share2 className="size-4" />
+              <span>Share</span>
             </Button>
             <ShareMenu
               title={pageTitle}
