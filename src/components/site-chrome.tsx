@@ -9,11 +9,13 @@ export function SiteChrome({
   courses,
   searchIndex,
   pageTitle,
+  showActions = false,
   children,
 }: {
   courses: Course[];
   searchIndex: SearchItem[];
   pageTitle: string;
+  showActions?: boolean;
   children: React.ReactNode;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -34,6 +36,7 @@ export function SiteChrome({
           <NavBar
             onOpenSidebar={() => setMobileOpen(true)}
             pageTitle={pageTitle}
+            showActions={showActions}
           />
           <div className="min-h-0 flex-1">{children}</div>
         </div>

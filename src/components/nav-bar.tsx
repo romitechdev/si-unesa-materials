@@ -10,9 +10,11 @@ import { Sheet } from "./ui/sheet";
 export function NavBar({
   onOpenSidebar,
   pageTitle,
+  showActions = false,
 }: {
   onOpenSidebar: () => void;
   pageTitle: string;
+  showActions?: boolean;
 }) {
   const [shareOpen, setShareOpen] = useState(false);
 
@@ -37,34 +39,38 @@ export function NavBar({
 
         <div className="flex-1" />
 
-        {/* Right actions — DeepWiki style */}
+        {/* Right actions — DeepWiki style (only on material pages) */}
         <div className="flex items-center gap-4 sm:gap-5">
-          <a
-            href="/admin"
-            className="hidden items-center gap-2 rounded-md border border-border bg-surface px-3 py-1.5 text-sm transition-all hover:border-border-hover hover:bg-component sm:inline-flex"
-            title="Edit SI"
-          >
-            <Pencil className="size-4" />
-            <span>Edit SI</span>
-          </a>
+          {showActions && (
+            <>
+              <a
+                href="/admin"
+                className="hidden items-center gap-2 rounded-md border border-border bg-surface px-3 py-1.5 text-sm transition-all hover:border-border-hover hover:bg-component sm:inline-flex"
+                title="Edit SI"
+              >
+                <Pencil className="size-4" />
+                <span>Edit SI</span>
+              </a>
 
-          <div className="relative">
-            <Button
-              className="h-9 gap-2 rounded-md px-3 text-sm"
-              onClick={() => setShareOpen((o) => !o)}
-              aria-label="Share this page"
-              aria-expanded={shareOpen}
-            >
-              <Share2 className="size-4" />
-              <span>Share</span>
-            </Button>
-            <ShareMenu
-              title={pageTitle}
-              open={shareOpen}
-              onOpenChange={setShareOpen}
-              align="right"
-            />
-          </div>
+              <div className="relative">
+                <Button
+                  className="h-9 gap-2 rounded-md px-3 text-sm"
+                  onClick={() => setShareOpen((o) => !o)}
+                  aria-label="Share this page"
+                  aria-expanded={shareOpen}
+                >
+                  <Share2 className="size-4" />
+                  <span>Share</span>
+                </Button>
+                <ShareMenu
+                  title={pageTitle}
+                  open={shareOpen}
+                  onOpenChange={setShareOpen}
+                  align="right"
+                />
+              </div>
+            </>
+          )}
 
           <ThemeToggle />
         </div>

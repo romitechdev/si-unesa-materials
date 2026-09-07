@@ -36,6 +36,7 @@ export default async function SessionPage({
       courses={courses}
       searchIndex={searchIndex}
       pageTitle={`${session.title} · ${course.title}`}
+      showActions
     >
       <ReaderView course={course} session={session} prev={prev} next={next} />
     </SiteChrome>
