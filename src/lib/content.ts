@@ -28,6 +28,7 @@ export type Session = {
   resources: Resource[];
   content: string;
   headings: Heading[];
+  searchText: string;
 };
 
 export type Course = {
@@ -82,6 +83,23 @@ function extractHeadings(html: string): Heading[] {
   return headings;
 }
 
+function markdownToPlainText(markdown: string): string {
+  return markdown
+    .replace(/```[\s\S]*?```/g, " ") // fenced code blocks
+    .replace(/`([^`]+)`/g, "$1") // inline code
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, " ") // images
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1") // links -> text
+    .replace(/^#{1,6}\s+/gm, "") // headings
+    .replace(/^\s*>\s?/gm, "") // blockquotes
+    .replace(/^[\s|:-]*\|[\s|:-]*$/gm, " ") // table separator rows
+    .replace(/^\s*[-*+]\s+/gm, "") // list markers
+    .replace(/^\s*\d+\.\s+/gm, "") // ordered list markers
+    .replace(/^[-=]{3,}\s*$/gm, " ") // hr
+    .replace(/[*_~>#|]/g, " ") // remaining md punctuation
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function normalizeOrder(fileSlug: string, frontOrder?: number): number {
   if (typeof frontOrder === "number") return frontOrder;
   const match = fileSlug.match(/(\d+)/);
@@ -108,6 +126,7 @@ async function readSession(
     resources: (data.resources as Resource[] | undefined) ?? [],
     content: html,
     headings: extractHeadings(html),
+    searchText: markdownToPlainText(content),
   };
 }
 
@@ -182,7 +201,7 @@ export async function getSearchIndex(): Promise<SearchItem[]> {
         session: session.title,
         fileSlug: session.fileSlug,
         slug: session.slug,
-        text: session.description || "",
+        text: session.searchText,
       });
     }
   }

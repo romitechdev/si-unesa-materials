@@ -7,6 +7,18 @@ import type { SearchItem } from "@/lib/content";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
+function snippet(text: string, q: string, radius = 70): { before: string; match: string; after: string } | null {
+  const idx = text.toLowerCase().indexOf(q.toLowerCase());
+  if (idx === -1) return null;
+  const start = Math.max(0, idx - radius);
+  const end = Math.min(text.length, idx + q.length + radius);
+  return {
+    before: (start > 0 ? "…" : "") + text.slice(start, idx),
+    match: text.slice(idx, idx + q.length),
+    after: text.slice(idx + q.length, end) + (end < text.length ? "…" : ""),
+  };
+}
+
 function highlight(text: string, q: string) {
   const idx = text.toLowerCase().indexOf(q.toLowerCase());
   if (idx === -1) return text;
@@ -39,12 +51,18 @@ export function SearchPanel({
 
   const results = useMemo(() => {
     if (!q) return [];
-    return searchIndex.filter(
-      (item) =>
-        item.session.toLowerCase().includes(q) ||
-        item.course.toLowerCase().includes(q) ||
-        item.text.toLowerCase().includes(q)
-    );
+    return searchIndex
+      .map((item) => {
+        const score =
+          (item.session.toLowerCase().includes(q) ? 3 : 0) +
+          (item.course.toLowerCase().includes(q) ? 2 : 0) +
+          (item.text.toLowerCase().includes(q) ? 1 : 0);
+        return { item, score };
+      })
+      .filter((r) => r.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 30)
+      .map((r) => r.item);
   }, [q, searchIndex]);
 
   const activeIndex = Math.min(active, Math.max(0, results.length - 1));
@@ -154,7 +172,19 @@ export function SearchPanel({
                     )}
                   </span>
                   <span className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
-                    {highlight(item.text, trimmed)}
+                    {(() => {
+                      const s = snippet(item.text, trimmed);
+                      if (!s) return item.text.slice(0, 140);
+                      return (
+                        <>
+                          {s.before}
+                          <mark className="rounded bg-brand/25 px-0.5 text-inherit">
+                            {s.match}
+                          </mark>
+                          {s.after}
+                        </>
+                      );
+                    })()}
                   </span>
                 </button>
               </li>
