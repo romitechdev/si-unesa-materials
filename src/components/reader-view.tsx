@@ -40,7 +40,7 @@ function ResourceCard({
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex items-center gap-3 rounded-xl border border-border p-3 transition-colors hover:border-brand/40 hover:bg-accent"
+      className="group flex items-center gap-3 rounded-xl border border-border p-3 transition-colors hover:border-border-hover hover:bg-accent"
     >
       <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-lg", meta.ring)}>
         <Icon className="size-5" />
@@ -53,7 +53,7 @@ function ResourceCard({
           {meta.label}
         </span>
       </span>
-      <ExternalLink className="size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-brand" />
+      <ExternalLink className="size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
     </a>
   );
 }
@@ -93,7 +93,7 @@ export function ReaderView({
         {/* Title */}
         <header className="mb-6">
           <div className="mb-3 flex flex-wrap items-center gap-2">
-            <Badge variant="brand">
+            <Badge variant="muted">
               <FileText className="size-3" />
               Session {session.order}
             </Badge>
@@ -125,7 +125,7 @@ export function ReaderView({
         {session.resources.length > 0 && (
           <section className="mb-8" aria-label="Resources">
             <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
-              <span className="flex size-5 items-center justify-center rounded-md bg-brand/15 text-brand">
+              <span className="flex size-5 items-center justify-center rounded-md bg-muted text-muted-foreground">
                 <Link2 className="size-3" />
               </span>
               Resources &amp; Materials
@@ -146,7 +146,7 @@ export function ReaderView({
           {prev ? (
             <Link
               href={`/${prev.slug}`}
-              className="group flex items-center gap-3 rounded-xl border border-border bg-card p-3 transition-colors hover:border-brand/40 hover:bg-accent"
+              className="group flex items-center gap-3 rounded-xl border border-border bg-card p-3 transition-colors hover:border-border-hover hover:bg-accent"
             >
               <ArrowLeft className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:-translate-x-0.5" />
               <span className="min-w-0">
@@ -162,7 +162,7 @@ export function ReaderView({
           {next ? (
             <Link
               href={`/${next.slug}`}
-              className="group flex items-center justify-end gap-3 rounded-xl border border-border p-3 text-right transition-colors hover:border-brand/40 hover:bg-accent"
+              className="group flex items-center justify-end gap-3 rounded-xl border border-border p-3 text-right transition-colors hover:border-border-hover hover:bg-accent"
             >
               <span className="min-w-0">
                 <span className="block text-xs text-muted-foreground">Next</span>

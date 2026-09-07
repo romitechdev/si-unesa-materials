@@ -50,7 +50,7 @@ export function SidebarNav({
               onClick={() => toggle(course.slug)}
               aria-expanded={!isCollapsed}
             >
-              <BookOpen className="size-4 shrink-0 text-brand" />
+              <BookOpen className="size-4 shrink-0 text-muted-foreground" />
               <span className="min-w-0 flex-1 truncate text-left">{course.title}</span>
               <ChevronRight
                 className={cn(
@@ -78,14 +78,14 @@ export function SidebarNav({
                         className={cn(
                           "flex items-center gap-2 rounded-md px-2.5 py-1.5 text-sm transition-colors",
                           isActive
-                            ? "bg-brand/10 font-medium text-brand"
+                            ? "bg-sidebar-accent font-medium text-foreground"
                             : "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"
                         )}
                       >
                         <FileText
                           className={cn(
                             "size-3.5 shrink-0",
-                            isActive ? "text-brand" : "text-muted-foreground"
+                            isActive ? "text-foreground" : "text-muted-foreground"
                           )}
                         />
                         <span className="min-w-0 flex-1 truncate">
@@ -94,7 +94,7 @@ export function SidebarNav({
                         <span
                           className={cn(
                             "hidden shrink-0 items-center gap-0.5 text-[0.65rem] tabular-nums text-muted-foreground sm:flex",
-                            isActive && "text-brand/70"
+                            isActive && "text-foreground/70"
                           )}
                         >
                           <Clock className="size-3" />

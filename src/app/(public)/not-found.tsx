@@ -4,8 +4,8 @@ import { FileQuestion, ArrowLeft } from "lucide-react";
 export default function NotFound() {
   return (
     <div className="flex min-h-[70vh] flex-col items-center justify-center px-6 text-center">
-      <span className="flex size-14 items-center justify-center rounded-2xl bg-brand/15">
-        <FileQuestion className="size-7 text-brand" />
+      <span className="flex size-14 items-center justify-center rounded-2xl bg-muted">
+        <FileQuestion className="size-7 text-muted-foreground" />
       </span>
       <p className="mt-6 text-5xl font-bold tracking-tight text-foreground">
         404
@@ -19,7 +19,7 @@ export default function NotFound() {
       </p>
       <Link
         href="/"
-        className="mt-6 inline-flex h-9 items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
+        className="mt-6 inline-flex h-9 items-center gap-2 rounded-md bg-foreground px-4 text-sm font-medium text-background shadow-sm transition-colors hover:opacity-90"
       >
         <ArrowLeft className="size-4" />
         Back to Home

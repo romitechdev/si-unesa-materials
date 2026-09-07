@@ -25,7 +25,7 @@ function highlight(text: string, q: string) {
   return (
     <>
       {text.slice(0, idx)}
-      <mark className="rounded bg-brand/25 px-0.5 text-inherit">
+                          <mark className="rounded bg-accent px-0.5 text-inherit">
         {text.slice(idx, idx + q.length)}
       </mark>
       {text.slice(idx + q.length)}
@@ -158,7 +158,7 @@ export function SearchPanel({
                     i === activeIndex
                       ? "bg-sidebar-accent"
                       : "hover:bg-sidebar-accent",
-                    isActiveRoute && "ring-1 ring-brand/30"
+                    isActiveRoute && "ring-1 ring-border"
                   )}
                 >
                   <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -178,7 +178,7 @@ export function SearchPanel({
                       return (
                         <>
                           {s.before}
-                          <mark className="rounded bg-brand/25 px-0.5 text-inherit">
+      <mark className="rounded bg-accent px-0.5 text-inherit">
                             {s.match}
                           </mark>
                           {s.after}

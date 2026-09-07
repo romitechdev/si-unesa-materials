@@ -16,9 +16,9 @@ export default async function IndexPage() {
     >
       <div className="min-h-screen bg-background">
       {/* Hero */}
-      <header className="border-b border-border bg-gradient-to-b from-brand/[0.06] to-transparent">
+      <header className="border-b border-border">
         <div className="mx-auto max-w-5xl px-6 py-12 sm:px-10 sm:py-16">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand/10 px-3 py-1 text-xs font-medium text-brand">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
             <FileText className="size-3.5" /> Information Systems
           </span>
           <h1 className="mt-4 max-w-2xl text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
@@ -27,8 +27,8 @@ export default async function IndexPage() {
 
           <div className="mt-8 flex flex-wrap gap-6 text-sm">
             <div className="flex items-center gap-2">
-              <span className="flex size-9 items-center justify-center rounded-lg bg-brand/15">
-                <BookOpen className="size-4 text-brand" />
+              <span className="flex size-9 items-center justify-center rounded-lg bg-muted">
+                <BookOpen className="size-4 text-muted-foreground" />
               </span>
               <div>
                 <p className="font-semibold text-foreground">{courses.length}</p>
@@ -36,8 +36,8 @@ export default async function IndexPage() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <span className="flex size-9 items-center justify-center rounded-lg bg-brand/15">
-                <FileText className="size-4 text-brand" />
+              <span className="flex size-9 items-center justify-center rounded-lg bg-muted">
+                <FileText className="size-4 text-muted-foreground" />
               </span>
               <div>
                 <p className="font-semibold text-foreground">
@@ -47,8 +47,8 @@ export default async function IndexPage() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <span className="flex size-9 items-center justify-center rounded-lg bg-brand/15">
-                <Clock className="size-4 text-brand" />
+              <span className="flex size-9 items-center justify-center rounded-lg bg-muted">
+                <Clock className="size-4 text-muted-foreground" />
               </span>
               <div>
                 <p className="font-semibold text-foreground">
@@ -70,13 +70,13 @@ export default async function IndexPage() {
             <Link
               key={course.slug}
               href={`/${course.slug}`}
-              className="group flex flex-col rounded-2xl border border-border bg-card p-5 transition-colors hover:border-brand/40 hover:bg-accent"
+              className="group flex flex-col rounded-2xl border border-border bg-card p-5 transition-colors hover:border-border-hover hover:bg-accent"
             >
               <div className="mb-3 flex items-center justify-between">
-                <span className="flex size-10 items-center justify-center rounded-xl bg-brand/15">
-                  <BookOpen className="size-5 text-brand" />
+                <span className="flex size-10 items-center justify-center rounded-xl bg-muted">
+                  <BookOpen className="size-5 text-muted-foreground" />
                 </span>
-                <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-brand" />
+                <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
               </div>
               <h3 className="text-lg font-semibold text-foreground">
                 {course.title}
