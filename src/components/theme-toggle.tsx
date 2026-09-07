@@ -18,13 +18,27 @@ export function ThemeToggle({ className }: { className?: string }) {
 
   const dark = mounted && resolvedTheme === "dark";
 
+  function toggle() {
+    // Play the DeepWiki-style reveal wipe on top of the page while the
+    // theme colors swap underneath.
+    const overlay = document.createElement("div");
+    overlay.className = "theme-transition-overlay";
+    document.body.appendChild(overlay);
+    setTheme(dark ? "light" : "dark");
+    overlay.addEventListener("animationend", () => overlay.remove(), {
+      once: true,
+    });
+    // Safety cleanup in case the animation is skipped (reduced motion).
+    setTimeout(() => overlay.remove(), 800);
+  }
+
   return (
     <Button
       variant="outline"
       size="icon"
       aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
       title={dark ? "Switch to light mode" : "Switch to dark mode"}
-      onClick={() => setTheme(dark ? "light" : "dark")}
+      onClick={toggle}
       className={cn("shrink-0", className)}
     >
       {mounted ? (

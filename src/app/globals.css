@@ -396,3 +396,31 @@
   from { transform: translateX(-100%); }
   to { transform: translateX(0); }
 }
+
+/* ---- Theme transition (DeepWiki "reveal" wipe) ----
+   A full-screen overlay plays a diamond clip-path wipe when the theme
+   toggles, mimicking DeepWiki's view-transition theme switch. */
+@keyframes theme-reveal {
+  0% {
+    clip-path: polygon(50% -71%, -50% 71%, -50% 71%, 50% -71%);
+    opacity: 0.6;
+  }
+  100% {
+    clip-path: polygon(50% -71%, -50% 71%, 50% 171%, 171% 50%);
+    opacity: 0;
+  }
+}
+.theme-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: var(--background);
+  animation: theme-reveal 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-transition-overlay {
+    animation: none;
+    opacity: 0;
+  }
+}
