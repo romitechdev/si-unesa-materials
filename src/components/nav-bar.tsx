@@ -17,7 +17,7 @@ export function NavBar({
   const [shareOpen, setShareOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-dashed border-border bg-surface/95 backdrop-blur">
       <div className="flex h-14 items-center gap-2 px-4 sm:px-6">
         {/* Left: mobile menu trigger */}
         <Button
@@ -41,7 +41,7 @@ export function NavBar({
         <div className="flex items-center gap-2">
           <a
             href="/admin"
-            className="hidden items-center gap-2 rounded-md border border-border bg-card px-3 py-1.5 text-sm transition-colors hover:bg-accent sm:inline-flex"
+            className="hidden items-center gap-2 rounded-md border border-border bg-surface px-3 py-1.5 text-sm transition-all hover:border-border-hover hover:bg-component sm:inline-flex"
             title="Edit SI"
           >
             <Pencil className="size-4" />
