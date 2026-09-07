@@ -27,11 +27,16 @@ export function SiteChrome({
         onMobileOpen={setMobileOpen}
       />
       <div className="min-h-screen min-w-0 flex-1">
-        <NavBar
-          onOpenSidebar={() => setMobileOpen(true)}
-          pageTitle={pageTitle}
-        />
-        {children}
+        {/* DeepWiki-style container wrapper: dashed vertical borders on
+            the left/right edges of the main content area, centered with
+            max-width 1400px. */}
+        <div className="relative mx-auto flex h-full min-h-screen w-full max-w-[1400px] flex-col border-x border-dashed border-border">
+          <NavBar
+            onOpenSidebar={() => setMobileOpen(true)}
+            pageTitle={pageTitle}
+          />
+          <div className="min-h-0 flex-1">{children}</div>
+        </div>
       </div>
     </div>
   );
