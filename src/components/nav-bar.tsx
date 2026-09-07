@@ -38,7 +38,7 @@ export function NavBar({
         <div className="flex-1" />
 
         {/* Right actions — DeepWiki style */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4 sm:gap-5">
           <a
             href="/admin"
             className="hidden items-center gap-2 rounded-md border border-border bg-surface px-3 py-1.5 text-sm transition-all hover:border-border-hover hover:bg-component sm:inline-flex"
