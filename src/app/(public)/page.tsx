@@ -65,12 +65,12 @@ export default async function IndexPage() {
       {/* Courses */}
       <main className="mx-auto max-w-5xl px-6 py-10 sm:px-10">
         <h2 className="mb-5 text-xl font-semibold text-foreground">All Courses</h2>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid min-w-0 gap-4 sm:grid-cols-2">
           {courses.map((course) => (
             <Link
               key={course.slug}
               href={`/${course.slug}`}
-              className="group flex flex-col rounded-2xl border border-border bg-card p-5 transition-colors hover:border-border-hover hover:bg-accent"
+              className="group flex min-w-0 flex-col rounded-2xl border border-border bg-card p-5 transition-colors hover:border-border-hover hover:bg-accent"
             >
               <div className="mb-3 flex items-center justify-between">
                 <span className="flex size-10 items-center justify-center rounded-xl bg-muted">
@@ -78,7 +78,7 @@ export default async function IndexPage() {
                 </span>
                 <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
               </div>
-              <h3 className="text-lg font-semibold text-foreground">
+              <h3 className="min-w-0 break-words text-lg font-semibold text-foreground">
                 {course.title}
               </h3>
               {course.lecturer && (
