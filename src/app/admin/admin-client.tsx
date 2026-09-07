@@ -21,12 +21,12 @@ import {
   ChevronRight,
   Folder,
   File,
-  Code,
   Heading2,
   List,
   Quote,
+  ChevronsDownUp,
+  ChevronsUpDown,
 } from "lucide-react";
-
 type Resource = { title: string; url: string; type: string };
 type Session = { fileSlug: string; title: string; description: string };
 type Course = { slug: string; sessions: Session[] };
@@ -215,6 +215,19 @@ export function AdminClient() {
   const [deleteSessionModal, setDeleteSessionModal] = useState<{ courseSlug: string; fileSlug: string; title: string } | null>(null);
   const [deleteCourseModal, setDeleteCourseModal] = useState<string | null>(null);
   const [renameCourseModal, setRenameCourseModal] = useState<{ oldSlug: string; newSlug: string } | null>(null);
+
+  // Collapse / expand course sessions in the sidebar tree
+  const [collapsedCourses, setCollapsedCourses] = useState<Record<string, boolean>>({});
+  const toggleCollapse = (slug: string) =>
+    setCollapsedCourses((prev) => ({ ...prev, [slug]: !(prev[slug] ?? false) }));
+  const setAllCollapsed = (v: boolean) => {
+    setCollapsedCourses((prev) => {
+      const next: Record<string, boolean> = {};
+      courses.forEach((c) => (next[c.slug] = v));
+      return next;
+    });
+  };
+  const anyExpanded = courses.some((c) => !collapsedCourses[c.slug]);
 
   const showToast = useCallback((msg: string, type: "success" | "error") => {
     setToast({ msg, type });
@@ -581,14 +594,29 @@ export function AdminClient() {
               <span className="font-mono text-[11px] font-semibold text-muted-foreground tracking-wider uppercase">
                 COURSES & MATERIALS
               </span>
-              <button
-                type="button"
-                onClick={() => setIsCreatingCourse(!isCreatingCourse)}
-                className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground hover:bg-muted hover:text-foreground"
-                title="Add New Course"
-              >
-                <Plus className="size-3" /> Course
-              </button>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => setAllCollapsed(anyExpanded)}
+                  className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground hover:bg-muted hover:text-foreground"
+                  title={anyExpanded ? "Collapse all courses" : "Expand all courses"}
+                >
+                  {anyExpanded ? (
+                    <ChevronsDownUp className="size-3" />
+                  ) : (
+                    <ChevronsUpDown className="size-3" />
+                  )}
+                  {anyExpanded ? "Collapse" : "Expand"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsCreatingCourse(!isCreatingCourse)}
+                  className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground hover:bg-muted hover:text-foreground"
+                  title="Add New Course"
+                >
+                  <Plus className="size-3" /> Course
+                </button>
+              </div>
             </div>
 
             {/* Inline Input New Course */}
@@ -623,19 +651,38 @@ export function AdminClient() {
             <div className="space-y-3">
               {courses.map((course) => {
                 const isCourseSelected = selectedCourse === course.slug;
+                const courseCollapsed = collapsedCourses[course.slug] ?? false;
                 return (
                   <div key={course.slug} className="space-y-1">
                     <div
-                      className={`group flex items-center justify-between rounded-md px-2 py-1.5 text-xs font-medium cursor-pointer transition-colors ${
+                      className={`group flex items-center gap-1 rounded-md px-2 py-1.5 text-xs font-medium cursor-pointer transition-colors ${
                         isCourseSelected
                           ? "bg-accent text-accent-foreground font-semibold"
                           : "text-foreground hover:bg-muted/60"
                       }`}
                       onClick={() => startNewSession(course.slug)}
                     >
-                      <div className="flex items-center gap-1.5 min-w-0">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleCollapse(course.slug);
+                        }}
+                        className="rounded p-0.5 text-muted-foreground hover:text-foreground"
+                        title={courseCollapsed ? "Expand sessions" : "Collapse sessions"}
+                        aria-label={courseCollapsed ? "Expand sessions" : "Collapse sessions"}
+                        aria-expanded={!courseCollapsed}
+                      >
+                        <ChevronRight
+                          className={`size-3.5 shrink-0 transition-transform ${courseCollapsed ? "" : "rotate-90"}`}
+                        />
+                      </button>
+                      <div className="flex min-w-0 flex-1 items-center gap-1.5">
                         <Folder className="size-3.5 shrink-0 text-muted-foreground" />
                         <span className="truncate capitalize">{course.slug.replace(/-/g, " ")}</span>
+                        <span className="shrink-0 rounded bg-muted px-1.5 font-mono text-[10px] tabular-nums text-muted-foreground">
+                          {course.sessions.length}
+                        </span>
                       </div>
                       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
@@ -645,7 +692,7 @@ export function AdminClient() {
                             setRenameCourseModal({ oldSlug: course.slug, newSlug: course.slug });
                           }}
                           className="p-0.5 text-muted-foreground hover:text-foreground"
-                          title="Rename matkul"
+                          title="Rename course"
                         >
                           <Pencil className="size-3" />
                         </button>
@@ -663,67 +710,71 @@ export function AdminClient() {
                       </div>
                     </div>
 
-                    {/* Lecturer input per course */}
-                    <div className="pl-3 ml-3 flex items-center gap-1.5 border-l border-border/60">
-                      <input
-                        type="text"
-                        value={courseLecturers[course.slug] || ""}
-                        onChange={(e) =>
-                          setCourseLecturers((prev) => ({ ...prev, [course.slug]: e.target.value }))
-                        }
-                        onBlur={() => saveCourseLecturer(course.slug)}
-                        placeholder="Lecturer name..."
-                        className="h-6 w-full rounded border border-border/60 bg-background px-1.5 text-[11px] text-foreground outline-none focus:border-ring"
-                      />
-                    </div>
+                    {!courseCollapsed && (
+                      <>
+                        {/* Lecturer input per course */}
+                        <div className="pl-3 ml-3 flex items-center gap-1.5 border-l border-border/60">
+                          <input
+                            type="text"
+                            value={courseLecturers[course.slug] || ""}
+                            onChange={(e) =>
+                              setCourseLecturers((prev) => ({ ...prev, [course.slug]: e.target.value }))
+                            }
+                            onBlur={() => saveCourseLecturer(course.slug)}
+                            placeholder="Lecturer name..."
+                            className="h-6 w-full rounded border border-border/60 bg-background px-1.5 text-[11px] text-foreground outline-none focus:border-ring"
+                          />
+                        </div>
 
-                    {/* List Sessions under course */}
-                    <div className="pl-3 space-y-0.5 border-l border-border/60 ml-3">
-                      {course.sessions.map((sess) => {
-                        const isEditingThis =
-                          editingSession?.courseSlug === course.slug &&
-                          editingSession?.fileSlug === sess.fileSlug;
-                        return (
-                          <div
-                            key={sess.fileSlug}
-                            onClick={() => loadSessionForEdit(course.slug, sess.fileSlug)}
-                            className={`group flex items-center justify-between rounded px-2 py-1 text-[12px] cursor-pointer transition-colors ${
-                              isEditingThis
-                                ? "bg-primary/10 text-primary font-semibold"
-                                : "text-muted-foreground hover:bg-muted/40 hover:text-foreground"
-                            }`}
+                        {/* List Sessions under course */}
+                        <div className="pl-3 space-y-0.5 border-l border-border/60 ml-3">
+                          {course.sessions.map((sess) => {
+                            const isEditingThis =
+                              editingSession?.courseSlug === course.slug &&
+                              editingSession?.fileSlug === sess.fileSlug;
+                            return (
+                              <div
+                                key={sess.fileSlug}
+                                onClick={() => loadSessionForEdit(course.slug, sess.fileSlug)}
+                                className={`group flex items-center justify-between rounded px-2 py-1 text-[12px] cursor-pointer transition-colors ${
+                                  isEditingThis
+                                    ? "bg-primary/10 text-primary font-semibold"
+                                    : "text-muted-foreground hover:bg-muted/40 hover:text-foreground"
+                                }`}
+                              >
+                                <div className="flex min-w-0 flex-1 items-center gap-1.5 truncate">
+                                  <File className="size-3 shrink-0 opacity-60" />
+                                  <span className="truncate">{sess.title}</span>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setDeleteSessionModal({
+                                      courseSlug: course.slug,
+                                      fileSlug: sess.fileSlug,
+                                      title: sess.title,
+                                    });
+                                  }}
+                                  className="opacity-0 group-hover:opacity-100 p-0.5 text-muted-foreground hover:text-destructive"
+                                  title="Delete material"
+                                >
+                                  <Trash2 className="size-3" />
+                                </button>
+                              </div>
+                            );
+                          })}
+
+                          <button
+                            type="button"
+                            onClick={() => startNewSession(course.slug)}
+                            className="flex w-full items-center gap-1 text-left px-2 py-1 text-[11px] font-mono text-muted-foreground/70 hover:text-foreground"
                           >
-                            <div className="flex items-center gap-1.5 truncate">
-                              <File className="size-3 shrink-0 opacity-60" />
-                              <span className="truncate">{sess.title}</span>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setDeleteSessionModal({
-                                  courseSlug: course.slug,
-                                  fileSlug: sess.fileSlug,
-                                  title: sess.title,
-                                });
-                              }}
-                              className="opacity-0 group-hover:opacity-100 p-0.5 text-muted-foreground hover:text-destructive"
-                              title="Delete material"
-                            >
-                              <Trash2 className="size-3" />
-                            </button>
-                          </div>
-                        );
-                      })}
-
-                      <button
-                        type="button"
-                        onClick={() => startNewSession(course.slug)}
-                        className="flex items-center gap-1 w-full text-left px-2 py-1 text-[11px] font-mono text-muted-foreground/70 hover:text-foreground"
-                      >
-                        <Plus className="size-3" /> Add Session
-                      </button>
-                    </div>
+                            <Plus className="size-3" /> Add Session
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
                 );
               })}
