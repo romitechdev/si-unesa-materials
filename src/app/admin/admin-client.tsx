@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -8,22 +8,14 @@ import {
   Trash2,
   Save,
   Lock,
-  BookOpen,
-  Clock,
-  Link2,
   X,
   Check,
   AlertCircle,
-  FileText,
-  FolderPlus,
   LogOut,
   Pencil,
   ChevronRight,
   Folder,
   File,
-  Heading2,
-  List,
-  Quote,
   ChevronsDownUp,
   ChevronsUpDown,
 } from "lucide-react";
@@ -221,7 +213,7 @@ export function AdminClient() {
   const toggleCollapse = (slug: string) =>
     setCollapsedCourses((prev) => ({ ...prev, [slug]: !(prev[slug] ?? false) }));
   const setAllCollapsed = (v: boolean) => {
-    setCollapsedCourses((prev) => {
+    setCollapsedCourses(() => {
       const next: Record<string, boolean> = {};
       courses.forEach((c) => (next[c.slug] = v));
       return next;
@@ -236,7 +228,7 @@ export function AdminClient() {
 
   const getPass = () => sessionStorage.getItem("admin_pass") || "";
 
-  const loadCourses = useCallback((pass: string) => {
+  const loadCourses = useCallback((pass: string | null) => {
     if (!pass) return;
     fetch("/api/admin", { headers: { "x-admin-pass": pass } })
       .then((r) => {
@@ -245,6 +237,7 @@ export function AdminClient() {
       })
       .then((d) => {
         const list = (d.courses || []) as (Course & { lecturer?: string })[];
+        setAuthed(true);
         setCourses(list);
         const lects: Record<string, string> = {};
         list.forEach((c) => { lects[c.slug] = c.lecturer || ""; });
@@ -256,17 +249,18 @@ export function AdminClient() {
         if (list.length > 0 && !selectedCourse) {
           setSelectedCourse(list[0].slug);
         }
+        setLoading(false);
       })
-      .catch(() => {});
+      .catch(() => setLoading(false));
   }, [selectedCourse]);
 
   useEffect(() => {
     const pass = sessionStorage.getItem("admin_pass");
     if (pass) {
-      setAuthed(true);
       loadCourses(pass);
+    } else {
+      Promise.resolve().then(() => setLoading(false));
     }
-    setLoading(false);
   }, [loadCourses]);
 
   function handleLogin(e: React.FormEvent) {
@@ -323,8 +317,8 @@ export function AdminClient() {
       setMinutes(data.minutes || 30);
       setResources((data.resources || []) as Resource[]);
       setContent(data.content || "");
-    } catch (err: any) {
-      showToast(`Failed to load: ${err.message}`, "error");
+    } catch (err) {
+      showToast(`Failed to load: ${err instanceof Error ? err.message : String(err)}`, "error");
     }
     setSaving(false);
   }
@@ -389,8 +383,8 @@ export function AdminClient() {
         resetForm();
         loadCourses(pass);
       }
-    } catch (err: any) {
-      showToast(`Error: ${err.message}`, "error");
+    } catch (err) {
+      showToast(`Error: ${err instanceof Error ? err.message : String(err)}`, "error");
     }
     setSaving(false);
   }
@@ -419,8 +413,8 @@ export function AdminClient() {
       }
       setDeleteSessionModal(null);
       loadCourses(pass);
-    } catch (err: any) {
-      showToast(`Failed to delete: ${err.message}`, "error");
+    } catch (err) {
+      showToast(`Failed to delete: ${err instanceof Error ? err.message : String(err)}`, "error");
     }
   }
 
@@ -450,8 +444,8 @@ export function AdminClient() {
       setIsCreatingCourse(false);
       setSelectedCourse(safeSlug);
       loadCourses(pass);
-    } catch (err: any) {
-      showToast(`Failed to create course: ${err.message}`, "error");
+    } catch (err) {
+      showToast(`Failed to create course: ${err instanceof Error ? err.message : String(err)}`, "error");
     }
     setSaving(false);
   }
@@ -478,8 +472,8 @@ export function AdminClient() {
       }
       setDeleteCourseModal(null);
       loadCourses(pass);
-    } catch (err: any) {
-      showToast(`Error: ${err.message}`, "error");
+    } catch (err) {
+      showToast(`Error: ${err instanceof Error ? err.message : String(err)}`, "error");
     }
   }
 
@@ -508,8 +502,8 @@ export function AdminClient() {
       }
       setRenameCourseModal(null);
       loadCourses(pass);
-    } catch (err: any) {
-      showToast(`Error: ${err.message}`, "error");
+    } catch (err) {
+      showToast(`Error: ${err instanceof Error ? err.message : String(err)}`, "error");
     }
   }
 
@@ -527,8 +521,8 @@ export function AdminClient() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       showToast("Lecturer updated", "success");
-    } catch (err: any) {
-      showToast(`Error: ${err.message}`, "error");
+    } catch (err) {
+      showToast(`Error: ${err instanceof Error ? err.message : String(err)}`, "error");
     }
   }
 
@@ -883,7 +877,7 @@ export function AdminClient() {
 
                 {resources.length === 0 && (
                   <p className="text-xs text-muted-foreground/60 italic py-2 text-center">
-                    No attachments yet. Click "Add Resource" to add Drive or PDF links.
+                    No attachments yet. Click &quot;Add Resource&quot; to add Drive or PDF links.
                   </p>
                 )}
 
@@ -1015,7 +1009,7 @@ export function AdminClient() {
           <div className="w-full max-w-sm rounded-lg border border-border bg-card p-5 space-y-3 shadow-lg">
             <h3 className="font-semibold text-sm">Delete Material?</h3>
             <p className="text-xs text-muted-foreground">
-              Material <span className="font-semibold text-foreground">"{deleteSessionModal.title}"</span> will be permanently deleted.
+              Material <span className="font-semibold text-foreground">&quot;{deleteSessionModal.title}&quot;</span> will be permanently deleted.
             </p>
             <div className="flex justify-end gap-2 pt-2">
               <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => setDeleteSessionModal(null)}>

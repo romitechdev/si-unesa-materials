@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Pencil, Share2, Menu } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import { ShareMenu } from "./share-button";
@@ -76,14 +77,14 @@ export function NavBar({
                 </span>
               </a>
 
-              <a
+              <Link
                 href="/admin"
                 className="hidden items-center gap-2 rounded-md border border-border bg-surface px-3 py-1.5 text-sm transition-all hover:border-border-hover hover:bg-component sm:inline-flex"
                 title="Edit SI"
               >
                 <Pencil className="size-4" />
                 <span>Edit SI</span>
-              </a>
+              </Link>
 
               <div className="relative">
                 <Button

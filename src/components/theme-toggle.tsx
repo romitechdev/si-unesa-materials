@@ -32,7 +32,7 @@ export function ThemeToggle({ className }: { className?: string }) {
     // Prefer the View Transitions API: the browser snapshots the old page,
     // swaps the theme, then reveals the new snapshot via the CSS
     // ::view-transition-new(root) keyframes (see globals.css).
-    const vt = (document as any).startViewTransition;
+    const vt = (document as Document & { startViewTransition?: (cb: () => void) => { ready: Promise<unknown>; finished: Promise<unknown> } }).startViewTransition;
     if (typeof vt === "function") {
       const transition = vt.call(document, applyTheme);
       transition.ready

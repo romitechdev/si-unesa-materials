@@ -11,11 +11,17 @@ function auth(req: NextRequest) {
   return pass === ADMIN_PASSWORD;
 }
 
-function buildFile(title: string, description: string, minutes: number, resources: any[], content: string) {
+interface Resource {
+  title: string;
+  url: string;
+  type?: string;
+}
+
+function buildFile(title: string, description: string, minutes: number, resources: Resource[], content: string) {
   const resourceLines = (resources || [])
-    .filter((r: any) => r.title && r.url)
+    .filter((r: Resource) => r.title && r.url)
     .map(
-      (r: any) =>
+      (r: Resource) =>
         `  - title: "${r.title.replace(/"/g, '\\"')}"\n    url: "${r.url}"\n    type: ${r.type || "link"}`
     )
     .join("\n");
