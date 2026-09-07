@@ -35,7 +35,7 @@ export function Sidebar({
 
   const inner = (
     <div className={cn("flex h-full flex-col", collapsed && "items-center")}>
-      {/* Brand */}
+      {/* Brand (DeepWiki style) */}
       <div
         className={cn(
           "flex h-14 shrink-0 items-center border-b border-border",
@@ -43,11 +43,11 @@ export function Sidebar({
         )}
       >
         <div className="min-w-0 flex-1">
-          <p className="truncate text-base font-bold leading-tight">
+          <p className="truncate text-base font-medium leading-none text-foreground md:text-lg">
             SI UNESA
           </p>
           {!collapsed && (
-            <p className="truncate text-xs leading-tight text-muted-foreground">
+            <p className="mt-1 truncate text-sm font-normal leading-none text-muted-foreground">
               Information Systems
             </p>
           )}

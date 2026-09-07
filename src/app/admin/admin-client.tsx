@@ -541,11 +541,11 @@ export function AdminClient() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background font-sans text-foreground antialiased">
+    <div className="flex h-screen flex-col overflow-hidden bg-background font-sans text-foreground antialiased">
       {toast && <Toast message={toast.msg} type={toast.type} />}
 
       {/* Top Navbar */}
-      <header className="sticky top-0 z-40 flex h-13 items-center justify-between border-b border-border bg-background/95 px-4 backdrop-blur sm:px-6">
+      <header className="flex h-14 shrink-0 items-center justify-between border-b border-border bg-background px-4 sm:px-6">
         <div className="flex items-center gap-3">
           <span className="font-mono text-xs font-bold tracking-tight text-foreground">
             LECTURE / CONTENT MANAGER
@@ -573,7 +573,7 @@ export function AdminClient() {
       </header>
 
       {/* Main Workspace (Sidebar + Form) */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex min-h-0 flex-1 overflow-hidden">
         {/* Left Sidebar - Course & Sessions Tree */}
         <aside className="w-72 shrink-0 border-r border-border bg-muted/20 flex flex-col justify-between overflow-y-auto">
           <div className="p-3 space-y-4">

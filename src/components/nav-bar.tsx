@@ -30,9 +30,9 @@ export function NavBar({
           <Menu className="size-4" />
         </Button>
 
-        {/* Center-left label */}
-        <span className="hidden text-sm text-muted-foreground sm:block">
-          SI UNESA · Course Materials
+        {/* Left label */}
+        <span className="hidden text-sm font-normal text-muted-foreground sm:block">
+          Course Materials
         </span>
 
         <div className="flex-1" />
