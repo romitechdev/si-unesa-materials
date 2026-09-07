@@ -1,6 +1,14 @@
 @import "tailwindcss";
 @import "highlight.js/styles/github-dark.css";
 
+/* highlight.js github-dark styles every `code` element with a light color,
+   which is invisible on inline code in the light theme. Scope it to code
+   blocks only; inline `code` is themed manually below. */
+:root code,
+.dark code {
+  color: inherit;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -309,6 +317,7 @@
 .prose-lecture code {
   font-family: var(--font-mono);
   font-size: 0.875em;
+  color: var(--foreground);
   background: var(--muted);
   border: 1px solid var(--border);
   padding: 0.12em 0.4em;
@@ -329,6 +338,7 @@
   background: transparent;
   border: none;
   border-radius: 0;
+  color: #c9d1d9;
   font-size: 0.85rem;
   line-height: 1.7;
 }
