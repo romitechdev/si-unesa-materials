@@ -65,12 +65,12 @@ export function NavBar({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group hidden items-center gap-2 md:flex"
-                title="Lihat sumber materi di GitHub"
+                title="View source on GitHub"
               >
                 <GitHubMark className="size-4 text-foreground/60 transition-colors group-hover:text-foreground [animation:custom-pulse_1.8s_ease-in-out_infinite]" />
                 <span className="relative">
                   <span className="text-xs font-medium text-foreground/80 transition-colors group-hover:text-foreground">
-                    Lihat di GitHub
+                    View on GitHub
                   </span>
                   <span className="absolute bottom-0 left-0 h-px w-0 bg-foreground/40 transition-all duration-300 group-hover:w-full" />
                 </span>
