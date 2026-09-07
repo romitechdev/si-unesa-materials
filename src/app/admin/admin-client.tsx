@@ -249,6 +249,10 @@ export function AdminClient() {
         const lects: Record<string, string> = {};
         list.forEach((c) => { lects[c.slug] = c.lecturer || ""; });
         setCourseLecturers(lects);
+        // Default: all courses collapsed (closed)
+        const nextCollapsed: Record<string, boolean> = {};
+        list.forEach((c) => { nextCollapsed[c.slug] = true; });
+        setCollapsedCourses(nextCollapsed);
         if (list.length > 0 && !selectedCourse) {
           setSelectedCourse(list[0].slug);
         }
