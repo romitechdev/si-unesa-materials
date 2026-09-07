@@ -26,21 +26,24 @@ const SOCIALS: { id: Target; label: string; icon: typeof Share2; url: (u: string
   { id: "tg", label: "Telegram", icon: Mail, url: (u, t) => `https://t.me/share/url?url=${encodeURIComponent(u)}&text=${encodeURIComponent(t)}` },
 ];
 
-export function ShareButton({
+export function ShareMenu({
   title,
+  open,
+  onOpenChange,
+  align = "right",
   className,
 }: {
   title: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  align?: "left" | "right";
   className?: string;
 }) {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const shareUrl =
-    typeof window !== "undefined"
-      ? window.location.origin + pathname
-      : pathname;
+    typeof window !== "undefined" ? window.location.origin + pathname : pathname;
   const shareTitle = `${title} — ${SITE_NAME}`;
 
   async function copy() {
@@ -68,90 +71,78 @@ export function ShareButton({
     }
   }
 
+  if (!open) return null;
+
   return (
     <div className={cn("relative", className)}>
-      <Button
-        variant="ghost"
-        size="icon"
-        className={cn("size-9", open && "bg-accent")}
-        onClick={() => setOpen((o) => !o)}
-        aria-label="Share this page"
-        aria-expanded={open}
+      <div className="fixed inset-0 z-40" onClick={() => onOpenChange(false)} aria-hidden />
+      <div
+        className={cn(
+          "absolute top-full z-50 mt-2 w-64 rounded-xl border border-border bg-background p-3 shadow-lg",
+          align === "right" ? "right-0" : "left-0"
+        )}
       >
-        {open ? <Share2 className="size-4" /> : <Share2 className="size-4" />}
-      </Button>
+        <p className="mb-2 px-1 text-xs font-semibold text-muted-foreground">
+          Share this page
+        </p>
 
-      {open && (
-        <>
-          <div
-            className="fixed inset-0 z-40"
-            onClick={() => setOpen(false)}
-            aria-hidden
+        <div className="flex items-center gap-2 rounded-lg border border-border p-1.5">
+          <Link2 className="ml-1 size-4 shrink-0 text-muted-foreground" />
+          <input
+            readOnly
+            value={shareUrl}
+            onFocus={(e) => e.currentTarget.select()}
+            className="min-w-0 flex-1 bg-transparent text-xs text-foreground outline-none"
+            aria-label="Page URL"
           />
-          <div className="absolute right-0 top-full z-50 mt-2 w-64 rounded-xl border border-border bg-background p-3 shadow-lg">
-            <p className="mb-2 px-1 text-xs font-semibold text-muted-foreground">
-              Share this page
-            </p>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-7 shrink-0"
+            onClick={copy}
+            aria-label="Copy link"
+          >
+            {copied ? (
+              <Check className="size-3.5 text-emerald-500" />
+            ) : (
+              <Copy className="size-3.5" />
+            )}
+          </Button>
+        </div>
 
-            <div className="flex items-center gap-2 rounded-lg border border-border p-1.5">
-              <Link2 className="ml-1 size-4 shrink-0 text-muted-foreground" />
-              <input
-                readOnly
-                value={shareUrl}
-                onFocus={(e) => e.currentTarget.select()}
-                className="min-w-0 flex-1 bg-transparent text-xs text-foreground outline-none"
-                aria-label="Page URL"
-              />
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-7 shrink-0"
-                onClick={copy}
-                aria-label="Copy link"
+        <div className="mt-2 grid grid-cols-4 gap-1">
+          {SOCIALS.map((s) => {
+            const Icon = s.icon;
+            return (
+              <a
+                key={s.id}
+                href={s.url(shareUrl, shareTitle)}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={s.label}
+                aria-label={`Share on ${s.label}`}
+                className="flex flex-col items-center gap-1 rounded-lg px-1 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
               >
-                {copied ? (
-                  <Check className="size-3.5 text-emerald-500" />
-                ) : (
-                  <Copy className="size-3.5" />
-                )}
-              </Button>
-            </div>
+                <Icon className="size-4" />
+                <span className="text-[0.6rem] leading-none">{s.label.split(" ")[0]}</span>
+              </a>
+            );
+          })}
+        </div>
 
-            <div className="mt-2 grid grid-cols-4 gap-1">
-              {SOCIALS.map((s) => {
-                const Icon = s.icon;
-                return (
-                  <a
-                    key={s.id}
-                    href={s.url(shareUrl, shareTitle)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title={s.label}
-                    aria-label={`Share on ${s.label}`}
-                    className="flex flex-col items-center gap-1 rounded-lg px-1 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-                  >
-                    <Icon className="size-4" />
-                    <span className="text-[0.6rem] leading-none">{s.label.split(" ")[0]}</span>
-                  </a>
-                );
-              })}
-            </div>
-
-            <Button
-              variant="outline"
-              size="sm"
-              className="mt-2 w-full"
-              onClick={async () => {
-                const ok = await nativeShare();
-                if (ok) setOpen(false);
-              }}
-              disabled={!navigator.share}
-            >
-              <Share2 className="size-3.5" /> More…
-            </Button>
-          </div>
-        </>
-      )}
+        <Button
+          variant="outline"
+          size="sm"
+          className="mt-2 w-full"
+          onClick={async () => {
+            const ok = await nativeShare();
+            if (ok) onOpenChange(false);
+          }}
+          disabled={!navigator.share}
+        >
+          <Share2 className="size-3.5" /> More…
+        </Button>
+      </div>
     </div>
   );
 }

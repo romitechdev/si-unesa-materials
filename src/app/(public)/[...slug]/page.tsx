@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
-import { getCourses } from "@/lib/content";
+import { getCourses, getSearchIndex } from "@/lib/content";
 import { ReaderView } from "@/components/reader-view";
+import { SiteChrome } from "@/components/site-chrome";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +29,15 @@ export default async function SessionPage({
   const next =
     index < course.sessions.length - 1 ? course.sessions[index + 1] : undefined;
 
+  const searchIndex = await getSearchIndex();
+
   return (
-    <ReaderView course={course} session={session} prev={prev} next={next} />
+    <SiteChrome
+      courses={courses}
+      searchIndex={searchIndex}
+      pageTitle={`${session.title} · ${course.title}`}
+    >
+      <ReaderView course={course} session={session} prev={prev} next={next} />
+    </SiteChrome>
   );
 }

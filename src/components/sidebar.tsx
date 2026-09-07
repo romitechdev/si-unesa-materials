@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import {
   Search,
-  Menu,
   X,
   BookMarked,
   PanelLeftClose,
@@ -22,13 +21,17 @@ export function Sidebar({
   courses,
   searchIndex,
   activeSlug,
+  mobileOpen,
+  onMobileOpen,
 }: {
   courses: Course[];
   searchIndex: SearchItem[];
   activeSlug?: string;
+  mobileOpen?: boolean;
+  onMobileOpen?: (open: boolean) => void;
 }) {
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const setMobileOpen = onMobileOpen ?? (() => {});
 
   const inner = (
     <div className={cn("flex h-full flex-col", collapsed && "items-center")}>
@@ -147,21 +150,7 @@ export function Sidebar({
 
   return (
     <>
-      {/* Mobile trigger */}
-      <div className="fixed inset-x-0 top-0 z-40 flex h-14 items-center justify-between border-b border-border bg-background px-4 lg:hidden">
-        <Link href="/" className="text-base font-bold">SI UNESA</Link>
-        <Button
-          variant="outline"
-          size="icon"
-          className="size-9"
-          onClick={() => setMobileOpen(true)}
-          aria-label="Open menu"
-        >
-          <Menu className="size-4" />
-        </Button>
-      </div>
-
-      <Sheet open={mobileOpen} onClose={() => setMobileOpen(false)} side="right">
+      <Sheet open={mobileOpen ?? false} onClose={() => setMobileOpen(false)} side="right">
         {inner}
       </Sheet>
 

@@ -1,14 +1,20 @@
 import Link from "next/link";
-import { getCourses } from "@/lib/content";
+import { getCourses, getSearchIndex } from "@/lib/content";
+import { SiteChrome } from "@/components/site-chrome";
 import { BookOpen, Clock, FileText, ArrowRight, User } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
 export default async function IndexPage() {
-  const courses = await getCourses();
+  const [courses, searchIndex] = await Promise.all([getCourses(), getSearchIndex()]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <SiteChrome
+      courses={courses}
+      searchIndex={searchIndex}
+      pageTitle="Home"
+    >
+      <div className="min-h-screen bg-background">
       {/* Hero */}
       <header className="border-b border-border bg-gradient-to-b from-brand/[0.06] to-transparent">
         <div className="mx-auto max-w-5xl px-6 py-12 sm:px-10 sm:py-16">
@@ -108,5 +114,6 @@ export default async function IndexPage() {
         </p>
       </footer>
     </div>
+    </SiteChrome>
   );
 }
