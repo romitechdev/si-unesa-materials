@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { TableOfContents } from "./table-of-contents";
+import { ShareButton } from "./share-button";
 import { cn } from "@/lib/utils";
 
 const RESOURCE_META: Record<
@@ -97,6 +98,9 @@ export function ReaderView({
               <FileText className="size-3" />
               Session {session.order}
             </Badge>
+            <span className="ml-auto">
+              <ShareButton title={session.title} />
+            </span>
             {course.lecturer && (
               <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
                 <User className="size-3.5" /> {course.lecturer}
