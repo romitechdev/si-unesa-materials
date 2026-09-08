@@ -36,8 +36,11 @@ export function NavBar({
   const [shareOpen, setShareOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-dashed border-border bg-surface/95 backdrop-blur">
-      <div className="flex h-14 items-center gap-2 px-4 sm:px-6">
+    <header className="sticky top-0 z-30 w-full bg-background/95 backdrop-blur">
+      {/* Full-bleed bottom dashed border extending 100vw to far left and right edges */}
+      <div className="pointer-events-none absolute bottom-0 -left-[100vw] -right-[100vw] border-b border-dashed border-border" />
+
+      <div className="flex h-16 sm:h-[72px] items-center gap-2 px-4 sm:px-6">
         {/* Left: mobile menu trigger */}
         <Button
           variant="ghost"
@@ -49,10 +52,16 @@ export function NavBar({
           <Menu className="size-4" />
         </Button>
 
-        {/* Left label */}
-        <span className="hidden text-sm font-normal text-muted-foreground sm:block">
-          Course Materials
-        </span>
+        {/* Brand — DeepWiki style (brand + sublabel in the navbar) */}
+        <Link href="/" className="group flex min-w-0 items-center gap-2">
+          <span className="truncate text-base font-medium text-foreground transition-colors group-hover:text-foreground md:text-lg">
+            SI UNESA
+          </span>
+          <span className="hidden min-w-0 items-center gap-1.5 text-sm text-muted-foreground sm:flex">
+            <span className="text-border">/</span>
+            <span className="truncate">Information Systems</span>
+          </span>
+        </Link>
 
         <div className="flex-1" />
 
@@ -79,7 +88,7 @@ export function NavBar({
 
               <Link
                 href="/admin"
-                className="hidden items-center gap-2 rounded-md border border-border bg-surface px-3 py-1.5 text-sm transition-all hover:border-border-hover hover:bg-component sm:inline-flex"
+                className="hidden items-center gap-2 rounded-md border border-border bg-background px-3 py-1.5 text-sm transition-all hover:border-border-hover hover:bg-component sm:inline-flex"
                 title="Edit SI"
               >
                 <Pencil className="size-4" />

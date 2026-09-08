@@ -34,37 +34,13 @@ export function Sidebar({
   const setMobileOpen = onMobileOpen ?? (() => {});
 
   const inner = (
-    <div className={cn("flex h-full flex-col", collapsed && "items-center")}>
-      {/* Brand (DeepWiki style) */}
-      <div
-        className={cn(
-          "flex h-14 shrink-0 items-center border-b border-border",
-          collapsed ? "justify-center px-0" : "px-4"
-        )}
-      >
-        {collapsed ? (
-          <Link
-            href="/"
-            className="flex size-9 items-center justify-center rounded-md bg-component font-medium text-foreground"
-            title="SI UNESA — Information Systems"
-            aria-label="SI UNESA — Information Systems"
-          >
-            SI
-          </Link>
-        ) : (
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-base font-medium leading-none text-foreground md:text-lg">
-              SI UNESA
-            </p>
-            <p className="mt-1 truncate text-sm font-normal leading-none text-muted-foreground">
-              Information Systems
-            </p>
-          </div>
-        )}
+    <div className={cn("flex h-full flex-col bg-background", collapsed && "items-center")}>
+      {/* Top bar — mobile close button only (brand lives in the navbar now) */}
+      <div className="flex h-16 sm:h-[72px] shrink-0 items-center justify-end border-b border-border px-2 lg:hidden">
         <Button
           variant="ghost"
           size="icon"
-          className="size-8 lg:hidden"
+          className="size-8"
           onClick={() => setMobileOpen(false)}
           aria-label="Close menu"
         >
@@ -166,7 +142,7 @@ export function Sidebar({
       {/* Desktop sidebar */}
       <aside
         className={cn(
-          "sticky top-0 hidden h-screen shrink-0 flex-col border-r border-border bg-sidebar text-sidebar-foreground transition-[width] duration-200 lg:flex",
+          "sticky top-16 sm:top-[72px] hidden h-[calc(100vh-4rem)] sm:h-[calc(100vh-72px)] shrink-0 flex-col border-r border-dashed border-border bg-background text-foreground transition-[width] duration-200 lg:flex",
           collapsed ? "w-16" : "w-72"
         )}
       >

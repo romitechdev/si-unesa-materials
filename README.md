@@ -177,14 +177,11 @@ A password-protected UI at **`/admin`** for managing content without editing fil
 The API checks the `x-admin-pass` header against `ADMIN_PASSWORD`:
 
 ```bash
-# default (no env set)
-export ADMIN_PASSWORD="romitech2025"
-
-# or set your own in the environment
-export ADMIN_PASSWORD="your-secret"
+# Set your admin password in the environment
+export ADMIN_PASSWORD="your-admin-password"
 ```
 
-> For production, always set `ADMIN_PASSWORD` to a strong value. The default is a development fallback only.
+> For production, set `ADMIN_PASSWORD` to a strong secret.
 
 ### API overview
 

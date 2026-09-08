@@ -23,25 +23,23 @@ export function SiteChrome({
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar
-        courses={courses}
-        searchIndex={searchIndex}
-        mobileOpen={mobileOpen}
-        onMobileOpen={setMobileOpen}
-      />
-      <div className="min-h-screen min-w-0 flex-1">
-        {/* DeepWiki-style container wrapper: dashed vertical borders on
-            the left/right edges of the main content area, centered with
-            max-width 1400px. */}
-        <div className="relative mx-auto flex h-full min-h-screen w-full max-w-[1400px] flex-col border-x border-dashed border-border">
-          <NavBar
-            onOpenSidebar={() => setMobileOpen(true)}
-            pageTitle={pageTitle}
-            showActions={showActions}
-            githubUrl={githubUrl}
+    <div className="flex min-h-screen bg-background overflow-x-clip">
+      {/* Centered outer container: dashed vertical borders run ALL THE WAY from y=0 to bottom */}
+      <div className="relative mx-auto flex min-h-screen w-full max-w-[1600px] flex-col border-x border-dashed border-border">
+        <NavBar
+          onOpenSidebar={() => setMobileOpen(true)}
+          pageTitle={pageTitle}
+          showActions={showActions}
+          githubUrl={githubUrl}
+        />
+        <div className="flex min-h-0 flex-1">
+          <Sidebar
+            courses={courses}
+            searchIndex={searchIndex}
+            mobileOpen={mobileOpen}
+            onMobileOpen={setMobileOpen}
           />
-          <div className="min-h-0 flex-1">{children}</div>
+          <main className="min-h-0 flex-1">{children}</main>
         </div>
       </div>
     </div>
