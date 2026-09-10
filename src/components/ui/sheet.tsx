@@ -42,7 +42,7 @@ function Sheet({
       />
       <div
         className={cn(
-          "absolute inset-y-0 flex w-[85%] max-w-sm flex-col bg-sidebar text-sidebar-foreground shadow-xl",
+          "absolute inset-y-0 flex w-[85%] max-w-sm flex-col bg-background text-foreground border-r border-border shadow-xl",
           side === "left"
             ? "left-0 animate-[slide-in-left_.2s_ease-out]"
             : "right-0 animate-[slide-in-right_.2s_ease-out]"

@@ -253,20 +253,30 @@
   color: var(--foreground);
 }
 .prose-lecture h2 {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  line-height: 1.3333;
-  margin-top: 2em;
-  margin-bottom: 1em;
-  padding-bottom: 0.5rem;
+  line-height: 1.35;
+  margin-top: 1.6em;
+  margin-bottom: 0.8em;
+  padding-bottom: 0.4rem;
   border-bottom: 1px solid var(--border);
 }
+@media (min-width: 640px) {
+  .prose-lecture h2 {
+    font-size: 1.5rem;
+  }
+}
 .prose-lecture h3 {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 600;
-  line-height: 1.6;
-  margin-top: 1.6em;
-  margin-bottom: 0.6em;
+  line-height: 1.5;
+  margin-top: 1.4em;
+  margin-bottom: 0.5em;
+}
+@media (min-width: 640px) {
+  .prose-lecture h3 {
+    font-size: 1.25rem;
+  }
 }
 .prose-lecture h4 {
   font-size: 1.0625rem;
@@ -374,6 +384,8 @@
   overflow-x: auto;
   max-width: 100%;
   margin: 1.5rem 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   -webkit-overflow-scrolling: touch;
 }
 .prose-lecture table {

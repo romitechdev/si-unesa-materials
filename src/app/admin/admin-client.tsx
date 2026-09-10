@@ -359,7 +359,7 @@ export function AdminClient() {
       } else {
         // POST New
         const count = courses.find((c) => c.slug === selectedCourse)?.sessions.length ?? 0;
-        const slugBase = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40);
+        const slugBase = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
         const fileSlug = count ? `${String(count + 1).padStart(2, "0")}-${slugBase}` : slugBase;
 
         const res = await fetch("/api/admin", {

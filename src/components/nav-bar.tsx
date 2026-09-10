@@ -66,7 +66,7 @@ export function NavBar({
         <div className="flex-1" />
 
         {/* Right actions — DeepWiki style (only on material pages) */}
-        <div className="flex items-center gap-4 sm:gap-5">
+        <div className="flex items-center gap-2.5 sm:gap-5">
           {showActions && (
             <>
               {/* GitHub CTA — mirrors DeepWiki's "Index your code with Devin" */}
@@ -97,12 +97,12 @@ export function NavBar({
 
               <div className="relative">
                 <Button
-                  className="h-9 gap-2 rounded-md px-3 text-sm"
+                  className="h-9 gap-1.5 rounded-md px-2.5 sm:px-3 text-xs sm:text-sm"
                   onClick={() => setShareOpen((o) => !o)}
                   aria-label="Share this page"
                   aria-expanded={shareOpen}
                 >
-                  <Share2 className="size-4" />
+                  <Share2 className="size-3.5 sm:size-4" />
                   <span>Share</span>
                 </Button>
                 <ShareMenu

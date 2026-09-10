@@ -35,12 +35,22 @@ export function Sidebar({
 
   const inner = (
     <div className={cn("flex h-full flex-col bg-background", collapsed && "items-center")}>
-      {/* Top bar — mobile close button only (brand lives in the navbar now) */}
-      <div className="flex h-16 sm:h-[72px] shrink-0 items-center justify-end border-b border-border px-2 lg:hidden">
+      {/* Mobile drawer header (brand + close button) */}
+      <div className="flex h-16 shrink-0 items-center justify-between border-b border-border px-4 lg:hidden">
+        <Link
+          href="/"
+          onClick={() => setMobileOpen(false)}
+          className="flex min-w-0 items-center gap-2"
+        >
+          <span className="truncate text-base font-semibold text-foreground">
+            SI UNESA
+          </span>
+          <span className="text-xs text-muted-foreground">/ Info Systems</span>
+        </Link>
         <Button
           variant="ghost"
           size="icon"
-          className="size-8"
+          className="size-8 text-muted-foreground hover:text-foreground"
           onClick={() => setMobileOpen(false)}
           aria-label="Close menu"
         >

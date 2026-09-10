@@ -46,10 +46,10 @@ function ResourceCard({
         <Icon className="size-5" />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block truncate text-sm font-medium text-foreground">
+        <span className="block text-sm font-medium text-foreground line-clamp-2 break-words">
           {title}
         </span>
-        <span className="block truncate text-xs text-muted-foreground">
+        <span className="block text-xs text-muted-foreground">
           {meta.label}
         </span>
       </span>
@@ -75,19 +75,22 @@ export function ReaderView({
     <div className="flex min-h-screen min-w-0">
       <main className="mx-auto flex w-full max-w-3xl min-w-0 flex-col px-4 py-6 sm:px-8 sm:py-8">
         {/* Breadcrumb */}
-        <nav className="mb-6 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground" aria-label="Breadcrumb">
-          <Link href="/" className="transition-colors hover:text-foreground">
+        <nav className="mb-6 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs sm:text-sm text-muted-foreground" aria-label="Breadcrumb">
+          <Link href="/" className="shrink-0 transition-colors hover:text-foreground">
             Courses
           </Link>
-          <span className="text-border">/</span>
+          <span className="shrink-0 text-border">/</span>
           <Link
             href={`/${course.slug}`}
-            className="max-w-[50%] truncate transition-colors hover:text-foreground"
+            className="max-w-[140px] shrink-0 truncate transition-colors hover:text-foreground sm:max-w-[240px] md:max-w-none"
+            title={course.title}
           >
             {course.title}
           </Link>
-          <span className="text-border">/</span>
-          <span className="min-w-0 truncate text-foreground">{session.fileSlug.replace(/^\d+[-_]/, "")}</span>
+          <span className="shrink-0 text-border">/</span>
+          <span className="min-w-0 max-w-[150px] shrink-0 truncate text-foreground sm:max-w-none" title={session.title}>
+            {session.title || session.fileSlug.replace(/^\d+[-_]/, "")}
+          </span>
         </nav>
 
         {/* Title */}
@@ -111,11 +114,11 @@ export function ReaderView({
               </span>
             )}
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          <h1 className="text-2xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl">
             {session.title}
           </h1>
           {session.description && (
-            <p className="mt-3 text-lg text-muted-foreground">
+            <p className="mt-3 text-base text-muted-foreground sm:text-lg">
               {session.description}
             </p>
           )}

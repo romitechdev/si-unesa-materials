@@ -17,15 +17,15 @@ export default async function IndexPage() {
       <div className="min-h-screen bg-background">
       {/* Hero */}
       <header className="border-b border-border">
-        <div className="mx-auto max-w-5xl px-6 py-12 sm:px-10 sm:py-16">
+        <div className="mx-auto max-w-5xl px-4 py-8 sm:px-10 sm:py-16">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
             <FileText className="size-3.5" /> Information Systems
           </span>
-          <h1 className="mt-4 max-w-2xl text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+          <h1 className="mt-4 max-w-2xl text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
             SI UNESA Course Materials
           </h1>
 
-          <div className="mt-8 flex flex-wrap gap-6 text-sm">
+          <div className="mt-8 grid grid-cols-2 gap-4 text-sm sm:flex sm:flex-wrap sm:gap-6">
             <div className="flex items-center gap-2">
               <span className="flex size-9 items-center justify-center rounded-lg bg-muted">
                 <BookOpen className="size-4 text-muted-foreground" />
@@ -46,7 +46,7 @@ export default async function IndexPage() {
                 <p className="text-muted-foreground">Sessions</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="col-span-2 flex items-center gap-2 sm:col-span-1">
               <span className="flex size-9 items-center justify-center rounded-lg bg-muted">
                 <Clock className="size-4 text-muted-foreground" />
               </span>
@@ -63,7 +63,7 @@ export default async function IndexPage() {
       </header>
 
       {/* Courses */}
-      <main className="mx-auto max-w-5xl px-6 py-10 sm:px-10">
+      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-10">
         <h2 className="mb-5 text-xl font-semibold text-foreground">All Courses</h2>
         <div className="grid min-w-0 gap-4 sm:grid-cols-2">
           {courses.map((course) => (

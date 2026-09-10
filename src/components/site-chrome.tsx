@@ -24,8 +24,8 @@ export function SiteChrome({
 
   return (
     <div className="flex min-h-screen bg-background overflow-x-clip">
-      {/* Centered outer container: dashed vertical borders run ALL THE WAY from y=0 to bottom */}
-      <div className="relative mx-auto flex min-h-screen w-full max-w-[1600px] flex-col border-x border-dashed border-border">
+      {/* Centered outer container: vertical dashed borders appear on md+ screens */}
+      <div className="relative mx-auto flex min-h-screen w-full max-w-[1600px] flex-col md:border-x border-dashed border-border">
         <NavBar
           onOpenSidebar={() => setMobileOpen(true)}
           pageTitle={pageTitle}
