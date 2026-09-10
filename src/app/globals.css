@@ -239,11 +239,23 @@
   line-height: 1.75;
   color: var(--foreground);
   word-break: break-word;
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
   max-width: 100%;
+  min-width: 0;
 }
 .prose-lecture > *:first-child {
   margin-top: 0;
+}
+.prose-lecture h2,
+.prose-lecture h3,
+.prose-lecture h4,
+.prose-lecture p,
+.prose-lecture li,
+.prose-lecture a,
+.prose-lecture blockquote {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  max-width: 100%;
 }
 .prose-lecture h2,
 .prose-lecture h3,
@@ -348,21 +360,26 @@
 }
 .prose-lecture code {
   font-family: var(--font-mono);
-  font-size: 0.875em;
+  font-size: 0.85em;
   color: var(--foreground);
   background: var(--muted);
   border: 1px solid var(--border);
-  padding: 0.12em 0.4em;
+  padding: 0.15em 0.4em;
   border-radius: 6px;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
 }
 .prose-lecture pre {
-  margin: 1.5rem 0;
+  margin: 1.25rem 0;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: oklch(0.16 0.008 265 / 0.95);
   overflow-x: auto;
   max-width: 100%;
   min-width: 0;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
 }
 .prose-lecture pre code {
   display: block;
@@ -373,6 +390,9 @@
   color: #c9d1d9;
   font-size: 0.85rem;
   line-height: 1.7;
+  white-space: pre;
+  word-break: normal;
+  overflow-wrap: normal;
 }
 .prose-lecture pre code.hljs {
   background: transparent;

@@ -32,14 +32,14 @@ export function SiteChrome({
           showActions={showActions}
           githubUrl={githubUrl}
         />
-        <div className="flex min-h-0 flex-1">
+        <div className="flex min-h-0 flex-1 w-full">
           <Sidebar
             courses={courses}
             searchIndex={searchIndex}
             mobileOpen={mobileOpen}
             onMobileOpen={setMobileOpen}
           />
-          <main className="min-h-0 flex-1">{children}</main>
+          <main className="min-h-0 min-w-0 flex-1 w-full max-w-full">{children}</main>
         </div>
       </div>
     </div>

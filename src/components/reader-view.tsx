@@ -72,29 +72,29 @@ export function ReaderView({
   const toc = session.headings;
 
   return (
-    <div className="flex min-h-screen min-w-0">
-      <main className="mx-auto flex w-full max-w-3xl min-w-0 flex-col px-4 py-6 sm:px-8 sm:py-8">
+    <div className="flex min-h-screen min-w-0 w-full max-w-full">
+      <main className="mx-auto flex w-full max-w-3xl min-w-0 max-w-full flex-col px-4 py-6 sm:px-8 sm:py-8">
         {/* Breadcrumb */}
-        <nav className="mb-6 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs sm:text-sm text-muted-foreground" aria-label="Breadcrumb">
+        <nav className="mb-6 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs sm:text-sm text-muted-foreground w-full min-w-0 max-w-full" aria-label="Breadcrumb">
           <Link href="/" className="shrink-0 transition-colors hover:text-foreground">
             Courses
           </Link>
           <span className="shrink-0 text-border">/</span>
           <Link
             href={`/${course.slug}`}
-            className="max-w-[140px] shrink-0 truncate transition-colors hover:text-foreground sm:max-w-[240px] md:max-w-none"
+            className="max-w-[130px] shrink-0 truncate transition-colors hover:text-foreground sm:max-w-[240px] md:max-w-none"
             title={course.title}
           >
             {course.title}
           </Link>
           <span className="shrink-0 text-border">/</span>
-          <span className="min-w-0 max-w-[150px] shrink-0 truncate text-foreground sm:max-w-none" title={session.title}>
+          <span className="min-w-0 max-w-[140px] shrink-0 truncate text-foreground sm:max-w-none" title={session.title}>
             {session.title || session.fileSlug.replace(/^\d+[-_]/, "")}
           </span>
         </nav>
 
         {/* Title */}
-        <header className="mb-6">
+        <header className="mb-6 w-full min-w-0 max-w-full">
           <div className="mb-3 flex flex-wrap items-center gap-2">
             <Badge variant="muted">
               <FileText className="size-3" />
@@ -114,11 +114,11 @@ export function ReaderView({
               </span>
             )}
           </div>
-          <h1 className="text-2xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl">
+          <h1 className="text-2xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl break-words">
             {session.title}
           </h1>
           {session.description && (
-            <p className="mt-3 text-base text-muted-foreground sm:text-lg">
+            <p className="mt-3 text-base text-muted-foreground sm:text-lg break-words">
               {session.description}
             </p>
           )}
@@ -126,7 +126,7 @@ export function ReaderView({
 
         {/* Resources */}
         {session.resources.length > 0 && (
-          <section className="mb-8" aria-label="Resources">
+          <section className="mb-8 w-full min-w-0 max-w-full" aria-label="Resources">
             <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
               <span className="flex size-5 items-center justify-center rounded-md bg-muted text-muted-foreground">
                 <Link2 className="size-3" />
@@ -142,7 +142,7 @@ export function ReaderView({
         )}
 
         {/* Content */}
-        <article className="prose-lecture" dangerouslySetInnerHTML={{ __html: session.content }} />
+        <article className="prose-lecture w-full min-w-0 max-w-full" dangerouslySetInnerHTML={{ __html: session.content }} />
 
         {/* Prev / Next */}
         <nav className="mt-12 flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:justify-between" aria-label="Pagination">
