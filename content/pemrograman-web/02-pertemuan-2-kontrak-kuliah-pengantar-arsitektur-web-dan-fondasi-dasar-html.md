@@ -1,9 +1,10 @@
 ---
-title: "Pertemuan 2 - Kontrak Kuliah, Pengantar Arsitektur Web, dan Fondasi Dasar HTML"
+title: "Pertemuan 2 "
 description: "Catatan komprehensif minggu kedua mata kuliah Pemrograman Web yang membahas tata tertib kelas, aturan kehadiran, dan kebijakan penggunaan AI . Dokumen ini juga mengulas integrasi mata kuliah pendukung (UI/UX, APSI, Basis Data) , dasar arsitektur client-server (HTTP/HTTPS) , perbedaan web statis & dinamis , pengenalan tiga teknologi utama (HTML, CSS, JS) , serta detail tugas kelompok pembuatan Handbook HTML fisik"
 minutes: 30
-updated: "2026-09-08"
+updated: "2026-09-17"
 ---
+
 
 
 ## 1. Aturan Kelas & Kontrak Perkuliahan
@@ -118,3 +119,4 @@ Pengembangan proyek website dalam mata kuliah ini mengintegrasikan modal dasar d
   * Handbook ini sangat krusial karena akan menjadi satu-satunya referensi fisik yang boleh dibawa mahasiswa ketika diminta maju menulis kode program di papan tulis. 
   * Saat maju menulis kode di papan tulis, mahasiswa **tidak diperkenankan** untuk membuka HP maupun laptop.
   * Mahasiswa harus memastikan bahwa anggota kelompok yang memegang buku handbook fisik tersebut selalu hadir pada setiap pertemuan kelas.
+

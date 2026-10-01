@@ -1,9 +1,10 @@
 ---
-title: "Pertemuan 2: SDLC & Model-Model Pengembangan Sistem Informasi"
+title: "Pertemuan 2"
 description: "Catatan perkuliahan Analisis dan Perancangan Sistem Informasi (APSI) Week 2. Membahas batasan ruang lingkup analisis-desain, komparasi mendalam 5 metodologi SDLC (Waterfall, Prototyping, RAD, Spiral, dan Agile/Scrum), serta pedoman teknis pengerjaan proyek studi kasus kelompok di lapangan (pemetaan Flow Map As-Is vs To-Be)."
 minutes: 30
-updated: "2026-09-07"
+updated: "2026-09-17"
 ---
+
 
 
 
@@ -179,5 +180,6 @@ Kerangka kerja inkremental adaptif yang memecah proyek menjadi siklus-siklus ker
 - [ ] **Pembentukan Tim:** Finalisasi 3 anggota kelompok tetap.
 - [ ] **Penetapan Lokasi Objek:** Diskusikan dan kunci target studi kasus yang memenuhi kriteria kompleksitas transaksi.
 - [ ] **Observasi Awal:** Mulai susun instrumen wawancara serta identifikasi titik masalah (*pain points*) operasional pada organisasi target.
+
 
 

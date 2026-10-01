@@ -1,9 +1,10 @@
 ---
-title: "Pertemuan 2: Evolusi Paradigma - Digitisasi, Digitalisasi, dan Transformasi Digital"
+title: "Pertemuan 2"
 description: "Catatan perkuliahan komprehensif mengenai perbedaan mendasar, karakteristik, linimasa evolusi, dan keterkaitan hierarkis antara Digitisasi (Digitization), Digitalisasi (Digitalization), dan Transformasi Digital (Digital Transformation). Dilengkapi dengan studi kasus industri nyata (sektor perbankan, kesehatan, logistik, dan social commerce serta panduan penugasan analisis studi kasus komparatif."
 minutes: 30
-updated: "2026-09-10"
+updated: "2026-09-17"
 ---
+
 
 
 
@@ -123,5 +124,6 @@ updated: "2026-09-10"
 * **Agenda Lanjutan (Persiapan Observasi):**
   * Pekan ke-3: Penyerahan daftar target instansi/perusahaan calon objek observasi proyek semester.
   * Pekan ke-4: Pengajuan administrasi surat pengantar izin survei resmi kampus.
+
 
 

@@ -1,9 +1,10 @@
 ---
-title: "Pertemuan 2: Siklus Hidup Manajemen Proses Bisnis (BPM Life Cycle) & Standar Notasi BPMN"
+title: "Pertemuan 2"
 description: "Catatan perkuliahan Manajemen Proses Bisnis (MPB) Week 2. Membahas evolusi konsep proses bisnis menuju Business Process Management System (BPMS), eksplorasi komprehensif 5 tahapan BPM Life Cycle (As-Is hingga To-Be), strategi manajemen perubahan organisasi (*change management*), serta aturan baku notasi pemodelan BPMN 2.0."
 minutes: 30
-updated: "2026-09-07"
+updated: "2026-09-17"
 ---
+
 
 ## 1. Konsep Dasar BPM & BPMS
 
@@ -105,3 +106,4 @@ Dalam perancangan diagram alur kerja menggunakan standar **Business Process Mode
 └───────────────────────────────────────────┘      └───────────────────────────────────────────┘
 
 ```
+

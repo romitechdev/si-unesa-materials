@@ -1,8 +1,9 @@
 ---
-title: "Pertemuan 2 - Integrasi SIstem"
+title: "Pertemuan 2"
 minutes: 30
-updated: "2026-09-08"
+updated: "2026-09-17"
 ---
+
 
 
 ## I. PENDAHULUAN & EVALUASI AWAL
@@ -186,3 +187,4 @@ Saat perusahaan merancang integrasi sistem ERP, ada lima faktor krusial yang har
 3.  **Solution Environment (Lingkungan Solusi):** Memeriksa karakteristik aplikasi yang akan dihubungkan, apakah berjalan di server lokal (*on-premise*), berbasis internet (*cloud*), atau menggunakan metode gabungan (*hybrid*).
 4.  **Technical Resources (Sumber Daya Teknis):** Mengukur ketersediaan dan kemampuan teknis tim IT internal perusahaan untuk membangun serta merawat sistem integrasi tersebut. Jika keahlian SDM IT sangat terbatas, perusahaan disarankan untuk memilih metode integrasi yang paling sederhana.
 5.  **Non-Functional Requirements (Kebutuhan Non-Fungsional):** Mempertimbangkan aspek-aspek di luar fungsi teknis dasar, seperti keamanan data (*security*), kemudahan pemeliharaan (*maintainability*), kecepatan transfer data, kepatuhan hukum (*compliance*), dan kesiapan pengembangan skala besar di masa mendatang (*scalability*).
+
