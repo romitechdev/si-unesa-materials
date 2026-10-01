@@ -32,6 +32,7 @@ export function Sidebar({
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const setMobileOpen = onMobileOpen ?? (() => {});
+  const totalSessions = courses.reduce((n, c) => n + c.sessions.length, 0);
 
   const inner = (
     <div className={cn("flex h-full flex-col bg-background", collapsed && "items-center")}>
@@ -105,7 +106,7 @@ export function Sidebar({
         {collapsed ? (
           <div className="flex flex-col items-center gap-1.5">
             <p className="text-[0.65rem] tabular-nums text-muted-foreground">
-              {courses.reduce((n, c) => n + c.sessions.length, 0)}
+              {totalSessions}
             </p>
             <Button
               variant="ghost"
@@ -120,8 +121,7 @@ export function Sidebar({
         ) : (
           <div className="flex items-center justify-between">
             <p className="text-[0.7rem] text-muted-foreground">
-              {courses.length} courses ·{" "}
-              {courses.reduce((n, c) => n + c.sessions.length, 0)} sessions
+              {courses.length} courses · {totalSessions} sessions
             </p>
             <div className="flex items-center gap-1">
               <div className="lg:hidden">

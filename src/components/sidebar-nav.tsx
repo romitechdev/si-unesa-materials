@@ -22,18 +22,16 @@ export function SidebarNav({
   });
   const q = (query ?? "").trim().toLowerCase();
 
+  const matches = (s: (typeof courses)[number]["sessions"][number]) =>
+    !q || s.title.toLowerCase().includes(q) || s.description?.toLowerCase().includes(q);
+
   const toggle = (slug: string) =>
     setCollapsed((prev) => ({ ...prev, [slug]: !prev[slug] }));
 
   return (
     <nav className="flex flex-col gap-1" aria-label="Course navigation">
       {courses.map((course) => {
-        const matched = course.sessions.filter((s) =>
-          q
-            ? s.title.toLowerCase().includes(q) ||
-              s.description?.toLowerCase().includes(q)
-            : true
-        );
+        const matched = course.sessions.filter(matches);
         if (q && matched.length === 0) return null;
 
         const isCollapsed = q ? false : collapsed[course.slug] ?? false;
@@ -110,13 +108,7 @@ export function SidebarNav({
         );
       })}
       {q &&
-        courses.every(
-          (c) =>
-            c.sessions.filter((s) =>
-              s.title.toLowerCase().includes(q) ||
-              s.description?.toLowerCase().includes(q)
-            ).length === 0
-        ) && (
+        courses.every((c) => c.sessions.filter(matches).length === 0) && (
         <p className="px-2.5 py-6 text-center text-sm text-muted-foreground">
           No sessions match &ldquo;{query}&rdquo;
         </p>

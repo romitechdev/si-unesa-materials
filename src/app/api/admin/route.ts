@@ -7,8 +7,20 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "romitech2025";
 const CONTENT_DIR = path.join(process.cwd(), "content");
 
 function auth(req: NextRequest) {
-  const pass = req.headers.get("x-admin-pass");
-  return pass === ADMIN_PASSWORD;
+  return req.headers.get("x-admin-pass") === ADMIN_PASSWORD;
+}
+
+function safeSlug(s: string) {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+function readCourseMeta(slug: string): { lecturer?: string } {
+  const metaPath = path.join(CONTENT_DIR, slug, "_course.json");
+  try {
+    return JSON.parse(fs.readFileSync(metaPath, "utf8"));
+  } catch {
+    return {};
+  }
 }
 
 interface Resource {
@@ -75,24 +87,15 @@ export async function GET(req: NextRequest) {
         .readdirSync(path.join(CONTENT_DIR, d.name))
         .filter((f) => /\.(md|mdx)$/.test(f))
         .sort();
-      let courseLecturer = "";
-      const metaPath = path.join(CONTENT_DIR, d.name, "_course.json");
-      if (fs.existsSync(metaPath)) {
-        try {
-          const meta = JSON.parse(fs.readFileSync(metaPath, "utf8"));
-          courseLecturer = meta.lecturer || "";
-        } catch {}
-      }
       const sessions = files.map((f) => {
-        const raw = fs.readFileSync(path.join(CONTENT_DIR, d.name, f), "utf8");
-        const { data } = matter(raw);
+        const { data } = matter(fs.readFileSync(path.join(CONTENT_DIR, d.name, f), "utf8"));
         return {
           fileSlug: f.replace(/\.(md|mdx)$/, ""),
           title: (data.title as string) || f,
           description: (data.description as string) || "",
         };
       });
-      courses.push({ slug: d.name, lecturer: courseLecturer, sessions });
+      courses.push({ slug: d.name, lecturer: readCourseMeta(d.name).lecturer || "", sessions });
     }
   }
 
@@ -112,7 +115,6 @@ export async function POST(req: NextRequest) {
     if (!courseSlug) {
       return NextResponse.json({ error: "courseSlug required" }, { status: 400 });
     }
-    const safeSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
     const dir = path.join(CONTENT_DIR, safeSlug(courseSlug));
 
     if (fs.existsSync(dir)) {
@@ -128,7 +130,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "courseSlug, title, and content are required" }, { status: 400 });
   }
 
-  const safeSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   const dir = path.join(CONTENT_DIR, safeSlug(courseSlug));
 
   if (!fs.existsSync(dir)) {
@@ -151,8 +152,6 @@ export async function PUT(req: NextRequest) {
   const body = await req.json();
   const { renameCourse, oldSlug, newSlug, courseSlug, fileSlug, title, description, minutes, resources, content, courseMeta } = body;
 
-  const safeSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-
   // Update course metadata (lecturer, etc.)
   if (courseMeta && courseSlug) {
     const dirPath = path.join(CONTENT_DIR, safeSlug(courseSlug));
@@ -160,10 +159,7 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: "Course not found" }, { status: 404 });
     }
     const metaPath = path.join(dirPath, "_course.json");
-    let existing: Record<string, string> = {};
-    if (fs.existsSync(metaPath)) {
-      try { existing = JSON.parse(fs.readFileSync(metaPath, "utf8")); } catch {}
-    }
+    const existing = fs.existsSync(metaPath) ? readCourseMeta(courseSlug) : {};
     existing.lecturer = courseMeta.lecturer || "";
     fs.writeFileSync(metaPath, JSON.stringify(existing, null, 2), "utf8");
     return NextResponse.json({ success: true });

@@ -7,6 +7,20 @@ import type { SearchItem } from "@/lib/content";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
+function Highlighted({ text, q }: { text: string; q: string }) {
+  const idx = text.toLowerCase().indexOf(q.toLowerCase());
+  if (idx === -1) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, idx)}
+      <mark className="rounded bg-accent px-0.5 text-inherit">
+        {text.slice(idx, idx + q.length)}
+      </mark>
+      {text.slice(idx + q.length)}
+    </>
+  );
+}
+
 function snippet(text: string, q: string, radius = 70): { before: string; match: string; after: string } | null {
   const idx = text.toLowerCase().indexOf(q.toLowerCase());
   if (idx === -1) return null;
@@ -17,20 +31,6 @@ function snippet(text: string, q: string, radius = 70): { before: string; match:
     match: text.slice(idx, idx + q.length),
     after: text.slice(idx + q.length, end) + (end < text.length ? "…" : ""),
   };
-}
-
-function highlight(text: string, q: string) {
-  const idx = text.toLowerCase().indexOf(q.toLowerCase());
-  if (idx === -1) return text;
-  return (
-    <>
-      {text.slice(0, idx)}
-                          <mark className="rounded bg-accent px-0.5 text-inherit">
-        {text.slice(idx, idx + q.length)}
-      </mark>
-      {text.slice(idx + q.length)}
-    </>
-  );
 }
 
 export function SearchPanel({
@@ -67,9 +67,13 @@ export function SearchPanel({
 
   const activeIndex = Math.min(active, Math.max(0, results.length - 1));
 
-  function go(slug: string) {
+  function clear() {
     setQuery("");
     setActive(0);
+  }
+
+  function go(slug: string) {
+    clear();
     onNavigate?.();
     router.push(`/${slug}`);
   }
@@ -85,8 +89,7 @@ export function SearchPanel({
       e.preventDefault();
       go(results[activeIndex].slug);
     } else if (e.key === "Escape") {
-      setQuery("");
-      setActive(0);
+      clear();
       onNavigate?.();
     }
   }
@@ -105,7 +108,6 @@ export function SearchPanel({
             setActive(0);
           }}
           onKeyDown={onKeyDown}
-          onFocus={() => inputRef.current?.select()}
           placeholder="Search topics, keywords…"
           className="h-9 pl-8 pr-8"
           aria-label="Search SI UNESA"
@@ -113,8 +115,7 @@ export function SearchPanel({
         {query && (
           <button
             onClick={() => {
-              setQuery("");
-              setActive(0);
+              clear();
               inputRef.current?.focus();
             }}
             className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"
@@ -166,7 +167,7 @@ export function SearchPanel({
                     {item.course}
                   </span>
                   <span className="flex items-center gap-1 text-sm font-medium text-foreground">
-                    {highlight(item.session, trimmed)}
+                    <Highlighted text={item.session} q={trimmed} />
                     {i === activeIndex && (
                       <CornerDownLeft className="ml-auto size-3.5 shrink-0 text-muted-foreground" />
                     )}
@@ -178,9 +179,7 @@ export function SearchPanel({
                       return (
                         <>
                           {s.before}
-      <mark className="rounded bg-accent px-0.5 text-inherit">
-                            {s.match}
-                          </mark>
+                          <Highlighted text={s.match} q={trimmed} />
                           {s.after}
                         </>
                       );

@@ -31,6 +31,36 @@ const RESOURCE_TYPES = [
   { value: "repo", label: "Repository Code" },
 ];
 
+const TOOLBAR = [
+  { label: "H2", snippet: "## Sub Judul" },
+  { label: "List", snippet: "- Key point" },
+  { label: "Code", snippet: "```python\nprint('hello')\n```" },
+  { label: "Quote", snippet: "> Catatan penting" },
+];
+
+async function api(
+  options: { method?: string; body?: unknown } = {},
+  on401?: () => void
+): Promise<Record<string, unknown>> {
+  const pass = sessionStorage.getItem("admin_pass");
+  if (!pass) throw new Error("not authenticated");
+  const res = await fetch("/api/admin", {
+    method: options.method ?? "GET",
+    headers: {
+      "x-admin-pass": pass,
+      ...(options.body ? { "Content-Type": "application/json" } : {}),
+    },
+    body: options.body ? JSON.stringify(options.body) : undefined,
+  });
+  if (res.status === 401) {
+    on401?.();
+    throw new Error("unauthorized");
+  }
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error);
+  return data;
+}
+
 function renderMarkdown(md: string): string {
   let html = md
     .replace(/&/g, "&amp;")
@@ -177,6 +207,39 @@ function Toast({ message, type }: { message: string; type: "success" | "error" }
   );
 }
 
+function ConfirmModal({
+  title,
+  body,
+  confirmLabel,
+  destructive = true,
+  onCancel,
+  onConfirm,
+}: {
+  title: string;
+  body: React.ReactNode;
+  confirmLabel: string;
+  destructive?: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
+      <div className="w-full max-w-sm rounded-lg border border-border bg-card p-5 space-y-3 shadow-lg">
+        <h3 className="font-semibold text-sm">{title}</h3>
+        <p className="text-xs text-muted-foreground">{body}</p>
+        <div className="flex justify-end gap-2 pt-2">
+          <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button variant={destructive ? "destructive" : "default"} size="sm" className="h-7 text-xs" onClick={onConfirm}>
+            {confirmLabel}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function AdminClient() {
   const [authed, setAuthed] = useState(false);
   const [password, setPassword] = useState("");
@@ -221,38 +284,44 @@ export function AdminClient() {
   };
   const anyExpanded = courses.some((c) => !collapsedCourses[c.slug]);
 
-  const showToast = useCallback((msg: string, type: "success" | "error") => {
-    setToast({ msg, type });
-    setTimeout(() => setToast(null), 3500);
+  const showToast = useCallback(
+    (msg: string, type: "success" | "error") => {
+      setToast({ msg, type });
+      setTimeout(() => setToast(null), 3500);
+    },
+    []
+  );
+
+  const logout = useCallback(() => {
+    sessionStorage.removeItem("admin_pass");
+    setAuthed(false);
+    setPassword("");
+    setCourses([]);
   }, []);
 
-  const getPass = () => sessionStorage.getItem("admin_pass") || "";
-
-  const loadCourses = useCallback((pass: string | null) => {
-    if (!pass) return;
-    fetch("/api/admin", { headers: { "x-admin-pass": pass } })
-      .then((r) => {
-        if (!r.ok) throw new Error("auth failed");
-        return r.json();
-      })
-      .then((d) => {
-        const list = (d.courses || []) as (Course & { lecturer?: string })[];
-        setAuthed(true);
-        setCourses(list);
-        const lects: Record<string, string> = {};
-        list.forEach((c) => { lects[c.slug] = c.lecturer || ""; });
-        setCourseLecturers(lects);
-        // Default: all courses collapsed (closed)
-        const nextCollapsed: Record<string, boolean> = {};
-        list.forEach((c) => { nextCollapsed[c.slug] = true; });
-        setCollapsedCourses(nextCollapsed);
-        if (list.length > 0 && !selectedCourse) {
-          setSelectedCourse(list[0].slug);
-        }
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, [selectedCourse]);
+  const loadCourses = useCallback(
+    (pass: string | null) => {
+      if (!pass) return;
+      fetch("/api/admin", { headers: { "x-admin-pass": pass } })
+        .then((r) => {
+          if (!r.ok) throw new Error("auth failed");
+          return r.json();
+        })
+        .then((d) => {
+          const list = (d.courses || []) as (Course & { lecturer?: string })[];
+          setAuthed(true);
+          setCourses(list);
+          setCourseLecturers(Object.fromEntries(list.map((c) => [c.slug, c.lecturer || ""])));
+          setCollapsedCourses(Object.fromEntries(list.map((c) => [c.slug, true])));
+          if (list.length > 0 && !selectedCourse) {
+            setSelectedCourse(list[0].slug);
+          }
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
+    },
+    [selectedCourse]
+  );
 
   useEffect(() => {
     const pass = sessionStorage.getItem("admin_pass");
@@ -277,10 +346,7 @@ export function AdminClient() {
   }
 
   function handleLogout() {
-    sessionStorage.removeItem("admin_pass");
-    setAuthed(false);
-    setPassword("");
-    setCourses([]);
+    logout();
     resetForm();
   }
 
@@ -299,14 +365,15 @@ export function AdminClient() {
   }
 
   async function loadSessionForEdit(cSlug: string, fSlug: string) {
-    const pass = getPass();
-    if (!pass) return;
     setSaving(true);
     try {
       const res = await fetch(`/api/admin?course=${cSlug}&file=${fSlug}`, {
-        headers: { "x-admin-pass": pass },
+        headers: { "x-admin-pass": sessionStorage.getItem("admin_pass") || "" },
       });
-      if (res.status === 401) { handleLogout(); return; }
+      if (res.status === 401) {
+        handleLogout();
+        return;
+      }
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
@@ -325,8 +392,6 @@ export function AdminClient() {
 
   async function handleSaveSession(e: React.FormEvent) {
     e.preventDefault();
-    const pass = getPass();
-    if (!pass) return;
 
     if (!selectedCourse) {
       showToast("Select a course first", "error");
@@ -336,11 +401,9 @@ export function AdminClient() {
     setSaving(true);
     try {
       if (editingSession) {
-        // PUT Edit
-        const res = await fetch("/api/admin", {
+        await api({
           method: "PUT",
-          headers: { "Content-Type": "application/json", "x-admin-pass": pass },
-          body: JSON.stringify({
+          body: {
             courseSlug: editingSession.courseSlug,
             fileSlug: editingSession.fileSlug,
             title,
@@ -348,24 +411,16 @@ export function AdminClient() {
             minutes,
             resources,
             content,
-          }),
-        });
-        if (res.status === 401) { handleLogout(); return; }
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
-
+          },
+        }, logout);
         showToast("Material updated successfully", "success");
-        loadCourses(pass);
       } else {
-        // POST New
         const count = courses.find((c) => c.slug === selectedCourse)?.sessions.length ?? 0;
         const slugBase = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
         const fileSlug = count ? `${String(count + 1).padStart(2, "0")}-${slugBase}` : slugBase;
-
-        const res = await fetch("/api/admin", {
+        await api({
           method: "POST",
-          headers: { "Content-Type": "application/json", "x-admin-pass": pass },
-          body: JSON.stringify({
+          body: {
             courseSlug: selectedCourse,
             title,
             description,
@@ -373,16 +428,12 @@ export function AdminClient() {
             resources,
             content,
             fileSlug,
-          }),
-        });
-        if (res.status === 401) { handleLogout(); return; }
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
-
+          },
+        }, logout);
         showToast("New material published successfully", "success");
         resetForm();
-        loadCourses(pass);
       }
+      loadCourses(sessionStorage.getItem("admin_pass"));
     } catch (err) {
       showToast(`Error: ${err instanceof Error ? err.message : String(err)}`, "error");
     }
@@ -391,28 +442,16 @@ export function AdminClient() {
 
   async function handleDeleteSession() {
     if (!deleteSessionModal) return;
-    const pass = getPass();
-    if (!pass) return;
+    const { courseSlug, fileSlug, title } = deleteSessionModal;
 
     try {
-      const res = await fetch("/api/admin", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json", "x-admin-pass": pass },
-        body: JSON.stringify({
-          courseSlug: deleteSessionModal.courseSlug,
-          fileSlug: deleteSessionModal.fileSlug,
-        }),
-      });
-      if (res.status === 401) { handleLogout(); return; }
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-
-      showToast(`Material "${deleteSessionModal.title}" deleted`, "success");
-      if (editingSession?.fileSlug === deleteSessionModal.fileSlug) {
+      await api({ method: "DELETE", body: { courseSlug, fileSlug } }, logout);
+      showToast(`Material "${title}" deleted`, "success");
+      if (editingSession?.fileSlug === fileSlug) {
         resetForm();
       }
       setDeleteSessionModal(null);
-      loadCourses(pass);
+      loadCourses(sessionStorage.getItem("admin_pass"));
     } catch (err) {
       showToast(`Failed to delete: ${err instanceof Error ? err.message : String(err)}`, "error");
     }
@@ -421,29 +460,16 @@ export function AdminClient() {
   async function handleCreateCourse(e: React.FormEvent) {
     e.preventDefault();
     if (!newCourseName.trim()) return;
-    const pass = getPass();
-    if (!pass) return;
 
     const safeSlug = newCourseName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
     setSaving(true);
     try {
-      const res = await fetch("/api/admin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-admin-pass": pass },
-        body: JSON.stringify({
-          createCourse: true,
-          courseSlug: safeSlug,
-        }),
-      });
-      if (res.status === 401) { handleLogout(); return; }
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-
+      await api({ method: "POST", body: { createCourse: true, courseSlug: safeSlug } }, logout);
       showToast(`Course "${safeSlug}" created`, "success");
       setNewCourseName("");
       setIsCreatingCourse(false);
       setSelectedCourse(safeSlug);
-      loadCourses(pass);
+      loadCourses(sessionStorage.getItem("admin_pass"));
     } catch (err) {
       showToast(`Failed to create course: ${err instanceof Error ? err.message : String(err)}`, "error");
     }
@@ -452,26 +478,17 @@ export function AdminClient() {
 
   async function handleDeleteCourse() {
     if (!deleteCourseModal) return;
-    const pass = getPass();
-    if (!pass) return;
+    const slug = deleteCourseModal;
 
     try {
-      const res = await fetch("/api/admin", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json", "x-admin-pass": pass },
-        body: JSON.stringify({ courseSlug: deleteCourseModal, deleteCourse: true }),
-      });
-      if (res.status === 401) { handleLogout(); return; }
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-
-      showToast(`Course "${deleteCourseModal}" deleted`, "success");
-      if (selectedCourse === deleteCourseModal) {
+      await api({ method: "DELETE", body: { courseSlug: slug, deleteCourse: true } }, logout);
+      showToast(`Course "${slug}" deleted`, "success");
+      if (selectedCourse === slug) {
         setSelectedCourse("");
         resetForm();
       }
       setDeleteCourseModal(null);
-      loadCourses(pass);
+      loadCourses(sessionStorage.getItem("admin_pass"));
     } catch (err) {
       showToast(`Error: ${err instanceof Error ? err.message : String(err)}`, "error");
     }
@@ -479,51 +496,33 @@ export function AdminClient() {
 
   async function handleRenameCourse() {
     if (!renameCourseModal || !renameCourseModal.newSlug.trim()) return;
-    const pass = getPass();
-    if (!pass) return;
+    const { oldSlug, newSlug } = renameCourseModal;
 
     try {
-      const res = await fetch("/api/admin", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json", "x-admin-pass": pass },
-        body: JSON.stringify({
-          renameCourse: true,
-          oldSlug: renameCourseModal.oldSlug,
-          newSlug: renameCourseModal.newSlug,
-        }),
-      });
-      if (res.status === 401) { handleLogout(); return; }
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-
+      const data = await api({ method: "PUT", body: { renameCourse: true, oldSlug, newSlug } }, logout);
       showToast(`Mata kuliah diubah menjadi "${data.newSlug}"`, "success");
-      if (selectedCourse === renameCourseModal.oldSlug) {
-        setSelectedCourse(data.newSlug);
+      if (selectedCourse === oldSlug) {
+        setSelectedCourse(data.newSlug as string);
       }
       setRenameCourseModal(null);
-      loadCourses(pass);
+      loadCourses(sessionStorage.getItem("admin_pass"));
     } catch (err) {
       showToast(`Error: ${err instanceof Error ? err.message : String(err)}`, "error");
     }
   }
 
   async function saveCourseLecturer(cSlug: string) {
-    const pass = getPass();
-    if (!pass) return;
     const val = courseLecturers[cSlug] || "";
     try {
-      const res = await fetch("/api/admin", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json", "x-admin-pass": pass },
-        body: JSON.stringify({ courseMeta: { lecturer: val }, courseSlug: cSlug }),
-      });
-      if (res.status === 401) { handleLogout(); return; }
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      await api({ method: "PUT", body: { courseMeta: { lecturer: val }, courseSlug: cSlug } }, logout);
       showToast("Lecturer updated", "success");
     } catch (err) {
       showToast(`Error: ${err instanceof Error ? err.message : String(err)}`, "error");
     }
+  }
+
+  function updateResource(i: number, field: keyof Resource, value: string) {
+    setResources((prev) => prev.map((r, idx) => (idx === i ? { ...r, [field]: value } : r)));
   }
 
   function insertMarkdownSnippet(prefix: string, suffix = "") {
@@ -887,30 +886,18 @@ export function AdminClient() {
                       <Input
                         placeholder="Resource name (e.g. Module 1 Slides)"
                         value={res.title}
-                        onChange={(e) => {
-                          const updated = [...resources];
-                          updated[i].title = e.target.value;
-                          setResources(updated);
-                        }}
+                        onChange={(e) => updateResource(i, "title", e.target.value)}
                         className="h-8 text-xs flex-1"
                       />
                       <Input
                         placeholder="URL (https://drive.google.com/...)"
                         value={res.url}
-                        onChange={(e) => {
-                          const updated = [...resources];
-                          updated[i].url = e.target.value;
-                          setResources(updated);
-                        }}
+                        onChange={(e) => updateResource(i, "url", e.target.value)}
                         className="h-8 text-xs flex-[1.5]"
                       />
                       <select
                         value={res.type}
-                        onChange={(e) => {
-                          const updated = [...resources];
-                          updated[i].type = e.target.value;
-                          setResources(updated);
-                        }}
+                        onChange={(e) => updateResource(i, "type", e.target.value)}
                         className="h-8 rounded-md border border-input bg-transparent px-2 text-xs font-mono"
                       >
                         {RESOURCE_TYPES.map((t) => (
@@ -937,38 +924,17 @@ export function AdminClient() {
                   <label className="text-xs font-medium text-muted-foreground">CONTENT (MARKDOWN)</label>
                   {/* Quick Toolbar */}
                   <div className="flex items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={() => insertMarkdownSnippet("## Sub Judul")}
-                      className="rounded border border-border px-1.5 py-0.5 font-mono text-[11px] hover:bg-muted"
-                      title="Sub Judul"
-                    >
-                      H2
-                    </button>
-                    <button
-                      type="button"
-                        onClick={() => insertMarkdownSnippet("- Key point")}
-                      className="rounded border border-border px-1.5 py-0.5 font-mono text-[11px] hover:bg-muted"
-                      title="Bullet list"
-                    >
-                      List
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => insertMarkdownSnippet("```python\nprint('hello')\n```")}
-                      className="rounded border border-border px-1.5 py-0.5 font-mono text-[11px] hover:bg-muted"
-                      title="Code Block"
-                    >
-                      Code
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => insertMarkdownSnippet("> Catatan penting")}
-                      className="rounded border border-border px-1.5 py-0.5 font-mono text-[11px] hover:bg-muted"
-                      title="Quote"
-                    >
-                      Quote
-                    </button>
+                    {TOOLBAR.map((b) => (
+                      <button
+                        key={b.label}
+                        type="button"
+                        onClick={() => insertMarkdownSnippet(b.snippet)}
+                        className="rounded border border-border px-1.5 py-0.5 font-mono text-[11px] hover:bg-muted"
+                        title={b.label}
+                      >
+                        {b.label}
+                      </button>
+                    ))}
                   </div>
                 </div>
 
@@ -1005,42 +971,32 @@ export function AdminClient() {
 
       {/* Modal Delete Session */}
       {deleteSessionModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-sm rounded-lg border border-border bg-card p-5 space-y-3 shadow-lg">
-            <h3 className="font-semibold text-sm">Delete Material?</h3>
-            <p className="text-xs text-muted-foreground">
+        <ConfirmModal
+          title="Delete Material?"
+          body={
+            <>
               Material <span className="font-semibold text-foreground">&quot;{deleteSessionModal.title}&quot;</span> will be permanently deleted.
-            </p>
-            <div className="flex justify-end gap-2 pt-2">
-              <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => setDeleteSessionModal(null)}>
-                Cancel
-              </Button>
-              <Button variant="destructive" size="sm" className="h-7 text-xs" onClick={handleDeleteSession}>
-                Delete
-              </Button>
-            </div>
-          </div>
-        </div>
+            </>
+          }
+          confirmLabel="Delete"
+          onCancel={() => setDeleteSessionModal(null)}
+          onConfirm={handleDeleteSession}
+        />
       )}
 
       {/* Modal Delete Course */}
       {deleteCourseModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-sm rounded-lg border border-border bg-card p-5 space-y-3 shadow-lg">
-            <h3 className="font-semibold text-sm">Delete Course?</h3>
-            <p className="text-xs text-muted-foreground">
+        <ConfirmModal
+          title="Delete Course?"
+          body={
+            <>
               Folder <span className="font-mono font-semibold text-foreground">{deleteCourseModal}</span> and all its materials will be deleted.
-            </p>
-            <div className="flex justify-end gap-2 pt-2">
-              <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => setDeleteCourseModal(null)}>
-                Cancel
-              </Button>
-              <Button variant="destructive" size="sm" className="h-7 text-xs" onClick={handleDeleteCourse}>
-                Delete Course
-              </Button>
-            </div>
-          </div>
-        </div>
+            </>
+          }
+          confirmLabel="Delete Course"
+          onCancel={() => setDeleteCourseModal(null)}
+          onConfirm={handleDeleteCourse}
+        />
       )}
 
       {/* Modal Rename Course */}

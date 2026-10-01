@@ -43,18 +43,18 @@ export type Course = {
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
 
+const processor = remark()
+  .use(remarkParse)
+  .use(remarkGfm)
+  .use(remarkRehype)
+  .use(rehypeSlug)
+  .use(rehypeHighlight, { ignoreMissing: true, detect: false })
+  .use(rehypeStringify, { allowDangerousHtml: false });
+
 function parseHtml(markdown: string) {
-  const processor = remark()
-    .use(remarkParse)
-    .use(remarkGfm)
-    .use(remarkRehype)
-    .use(rehypeSlug)
-    .use(rehypeHighlight, { ignoreMissing: true, detect: false })
-    .use(rehypeStringify, { allowDangerousHtml: false });
-  let html = String(processor.processSync(markdown));
-  html = html.replace(/<table>/g, '<div class="table-wrapper"><table>');
-  html = html.replace(/<\/table>/g, '</table></div>');
-  return html;
+  return String(processor.processSync(markdown))
+    .replace(/<table>/g, '<div class="table-wrapper"><table>')
+    .replace(/<\/table>/g, "</table></div>");
 }
 
 function decodeEntities(text: string): string {
@@ -70,17 +70,13 @@ function decodeEntities(text: string): string {
 }
 
 function extractHeadings(html: string): Heading[] {
-  const headings: Heading[] = [];
-  const re = /<h([2-4])[^>]*\bid="([^"]+)"[^>]*>([\s\S]*?)<\/h\1>/g;
-  let m: RegExpExecArray | null;
-  while ((m = re.exec(html)) !== null) {
-    headings.push({
-      depth: Number(m[1]),
-      id: m[2],
-      text: decodeEntities(m[3].replace(/<[^>]+>/g, "")).trim(),
-    });
-  }
-  return headings;
+  return [...html.matchAll(/<h([2-4])[^>]*\bid="([^"]+)"[^>]*>([\s\S]*?)<\/h\1>/g)].map(
+    ([, depth, id, inner]) => ({
+      depth: Number(depth),
+      id,
+      text: decodeEntities(inner.replace(/<[^>]+>/g, "")).trim(),
+    })
+  );
 }
 
 function markdownToPlainText(markdown: string): string {
@@ -192,18 +188,14 @@ export type SearchItem = {
 
 export async function getSearchIndex(): Promise<SearchItem[]> {
   const courses = await getCourses();
-  const items: SearchItem[] = [];
-  for (const course of courses) {
-    for (const session of course.sessions) {
-      items.push({
-        course: course.title,
-        courseSlug: course.slug,
-        session: session.title,
-        fileSlug: session.fileSlug,
-        slug: session.slug,
-        text: session.searchText,
-      });
-    }
-  }
-  return items;
+  return courses.flatMap((course) =>
+    course.sessions.map((session) => ({
+      course: course.title,
+      courseSlug: course.slug,
+      session: session.title,
+      fileSlug: session.fileSlug,
+      slug: session.slug,
+      text: session.searchText,
+    }))
+  );
 }

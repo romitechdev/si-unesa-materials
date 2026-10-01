@@ -58,6 +58,40 @@ function ResourceCard({
   );
 }
 
+function PageLink({
+  label,
+  session,
+  align,
+}: {
+  label: string;
+  session: Session;
+  align: "prev" | "next";
+}) {
+  const Icon = align === "prev" ? ArrowLeft : ArrowRight;
+  return (
+    <Link
+      href={`/${session.slug}`}
+      className={cn(
+        "group flex items-center gap-3 rounded-xl border border-border p-3 transition-colors hover:border-border-hover hover:bg-accent",
+        align === "prev" ? "bg-card" : "justify-end text-right"
+      )}
+    >
+      {align === "prev" && (
+        <Icon className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:-translate-x-0.5" />
+      )}
+      <span className="min-w-0">
+        <span className="block text-xs text-muted-foreground">{label}</span>
+        <span className="block truncate text-sm font-medium text-foreground">
+          {session.title}
+        </span>
+      </span>
+      {align === "next" && (
+        <Icon className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+      )}
+    </Link>
+  );
+}
+
 export function ReaderView({
   course,
   session,
@@ -146,38 +180,8 @@ export function ReaderView({
 
         {/* Prev / Next */}
         <nav className="mt-12 flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:justify-between" aria-label="Pagination">
-          {prev ? (
-            <Link
-              href={`/${prev.slug}`}
-              className="group flex items-center gap-3 rounded-xl border border-border bg-card p-3 transition-colors hover:border-border-hover hover:bg-accent"
-            >
-              <ArrowLeft className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:-translate-x-0.5" />
-              <span className="min-w-0">
-                <span className="block text-xs text-muted-foreground">Previous</span>
-                <span className="block truncate text-sm font-medium text-foreground">
-                  {prev.title}
-                </span>
-              </span>
-            </Link>
-          ) : (
-            <span />
-          )}
-          {next ? (
-            <Link
-              href={`/${next.slug}`}
-              className="group flex items-center justify-end gap-3 rounded-xl border border-border p-3 text-right transition-colors hover:border-border-hover hover:bg-accent"
-            >
-              <span className="min-w-0">
-                <span className="block text-xs text-muted-foreground">Next</span>
-                <span className="block truncate text-sm font-medium text-foreground">
-                  {next.title}
-                </span>
-              </span>
-              <ArrowRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-            </Link>
-          ) : (
-            <span />
-          )}
+          {prev ? <PageLink label="Previous" session={prev} align="prev" /> : <span />}
+          {next ? <PageLink label="Next" session={next} align="next" /> : <span />}
         </nav>
       </main>
 
